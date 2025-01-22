@@ -59,7 +59,7 @@ project-name/
 
 ## Contributors
 - Jimmy Cho - BCIT CST Student with a passion for creating user-friendly applications. Fun fact: Loves playing Baldur's Gate
-- **Anderson Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
+- **Anderson** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
 - **Deniz Gunay** - BCIT CST Student and Fullstack Software Engineer. Fun fact: I'm addicted to Path of Exile. 
 
 ---
