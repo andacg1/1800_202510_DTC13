@@ -1,10 +1,14 @@
 import { html, LitElement, css } from "lit";
+import install from "@twind/with-web-components";
+import config from "../../twind.config";
 import "../../styles/style.css";
 
 import { customElement, property } from "lit/decorators.js";
 
+const withTwind = install(config);
+
 @customElement("bottom-navbar")
-export class BottomNavbar extends LitElement {
+export class BottomNavbar extends withTwind(LitElement) {
   static styles = css`
     .container {
       display: block;
@@ -17,7 +21,7 @@ export class BottomNavbar extends LitElement {
 
   render() {
     return html`<div
-      class="container fixed bottom-0 left-0 w-dvw h-60 bg-amber-300 w-100"
+      class="container fixed bottom-0 left-0 w-dvw h-60 bg-amber-300"
     >
       Hello, ${this.name}!
     </div>`;
