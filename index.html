@@ -1,59 +1,80 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <link href="/styles/style.css" rel="stylesheet" />
+    <!--  <script type="module" src="/src/components/index.ts"></script>-->
+    <script type="module" src="/src/scripts/main.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + Lit + TS</title>
-  <link rel="stylesheet" href="./src/index.css" />
-  <link rel="stylesheet" media="(prefers-color-scheme:light)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.0/cdn/themes/light.css" />
-  <link rel="stylesheet" media="(prefers-color-scheme:dark)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.0/cdn/themes/dark.css"
-    onload="document.documentElement.classList.add('sl-theme-dark');" />
-  <link href="/styles/style.css" rel="stylesheet" />
-  <script type="module" src="/src/components/my-element.ts"></script>
-  <script type="module" src="/src/components/index.ts"></script>
-  <script type="module" src="/scripts/main.js"></script>
-</head>
+  <body>
+    <!--Header with the hamburger profile and Logo-->
+    <header class="bg-emerald-900 bg-cover py-4 px-auto">
+      <div class="flex justify-between">
+        <a href="">
+          <nav class="text-4xl font-extrabold ml-4 mt-6">CalSync</nav>
+        </a>
+        <a class="flex flex-col text-center items-center mr-4" href="">
+          <svg
+            class="w-10 h-10"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="24"
+            height="24"
+            stroke-width="2"
+          >
+            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+            <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+            <path
+              d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"
+            ></path>
+          </svg>
+          profile
+        </a>
+      </div>
+    </header>
 
-<body>
+    <main class="container mx-auto pt-8">
+      <h1 class="text-3xl my-4 w-full text-center text-gray-400">
+        Welcome to
+        <span class="text-5xl text-white font-semibold">CalSync</span>
+      </h1>
+      <form class="flex flex-col gap-12">
+        <div class="">
+          <p class="mb-2">Username</p>
+          <input
+            class="border border-gray-600 w-full p-2"
+            placeholder="Username"
+          />
+        </div>
+        <div>
+          <p class="mb-2">Password</p>
+          <input
+            class="border border-gray-600 w-full p-2"
+            placeholder="********"
+          />
+        </div>
+        <button class="bg-indigo-800 p-3 text-xl">Login</button>
+      </form>
+    </main>
 
-  <!--Header with the hamburger profile and Logo-->
-  <header class="bg-gray-400 bg-cover py-4 px-auto">
-    <div class="flex justify-between">
-      <a href="">
-        <nav class="text-4xl font-extrabold ml-4 mt-6">Title</nav>
-      </a>
-      <a class="flex flex-col text-center items-center mr-4" href="">
-        <svg class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-          <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-          <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-          <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
-        </svg>
-        profile
-      </a>
-    </div>
-  </header>
+    <nav
+      class="fixed bottom-0 left-0 justify-around items-center flex flex-row w-full h-20 bg-emerald-900"
+    >
+      <a>Home</a>
+      <a>Search</a>
+      <a>Event</a>
+      <a>Support</a>
+    </nav>
 
-  <main>
-    <h2>Welcome to</h2>
-    <h1>CalSync</h1>
-  </main>
-  <div class="border border-gray-300">
-    <div class>
-      <p>Username</p>
-      <input placeholder="Username" />
-    </div>
-    <div>
-      <p>Password</p>
-      <input placeholder="********" />
-    </div>
-    <button>Login</button>
-  </div>
-  <bottom-navbar></bottom-navbar>
-  <footer></footer>
-</body>
-
+    <footer></footer>
+  </body>
 </html>
