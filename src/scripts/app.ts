@@ -1,5 +1,6 @@
 import "cally";
 import { hydrate } from "./hydrate";
+import safeOnLoad from "./lib/safeOnLoad.ts";
 
 // Set the base path to the folder you copied Shoelace's assets to
 console.log("SCRIPT");
@@ -11,11 +12,4 @@ function injectElements() {
   ]);
 }
 
-if (
-  document.readyState === "complete" ||
-  document.readyState === "interactive"
-) {
-  injectElements();
-} else {
-  document.addEventListener("load", injectElements);
-}
+safeOnLoad(injectElements)
