@@ -2,70 +2,39 @@
 <html lang="en" data-theme="sunset">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite</title>
+    <title>Login</title>
 
     <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
     <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="/src/index.css" />
-    <link href="/styles/style.css" rel="stylesheet" />
-
-    <script type="module" src="/src/scripts/app"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   </head>
 
-  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
-    <!--Header with the hamburger profile and Logo-->
+  <body class="bg-gray-300">
+
     <header id="top-navbar"></header>
 
-    <main
-      class="container mx-auto pt-8 px-2 md:px-0 flex flex-col items-center overflow-y-scroll grow-1 py-8"
-    >
-      <h1 class="text-3xl my-4 w-full text-center text-gray-400">
+    <main class="justify-center max-w-[700px] mx-auto bg-white rounded-2xl p-5 h-screen">
+      <h1 class="text-3xl text-center my-10">
         Welcome to
-        <span class="text-5xl text-white font-semibold">CalSync</span>
+        <span class="text-5xl font-semibold">CalSync</span>
       </h1>
-      <form class="flex flex-col gap-12">
-        <div class="">
+      <form>
+        <div class="mx-auto max-w-[300px]">
           <p class="mb-2">Username</p>
           <input
             class="border border-gray-600 w-full p-2"
             placeholder="Username"
           />
-        </div>
-        <div>
-          <p class="mb-2">Password</p>
+          <p class="my-2">Password</p>
           <input
             class="border border-gray-600 w-full p-2"
             placeholder="********"
           />
+
         </div>
-        <button class="btn btn-primary bg-indigo-800 p-3 text-xl">Login</button>
       </form>
-      <calendar-date
-        class="cally bg-base-100 border border-base-300 shadow-lg rounded-box"
-      >
-        <svg
-          aria-label="Previous"
-          class="size-4"
-          slot="previous"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path>
-        </svg>
-        <svg
-          aria-label="Next"
-          class="size-4"
-          slot="next"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
-        </svg>
-        <calendar-month></calendar-month>
-      </calendar-date>
     </main>
 
     <nav id="bottom-navbar"></nav>
