@@ -19,7 +19,57 @@
     <main
       id="main-content"
       class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
-    ></main>
+    >
+      <div class="carousel w-full">
+        <div id="step1" class="carousel-item w-full justify-center">
+          <div>
+            <h1 class="w-full text-2xl mb-2 font-bold" slot="heading">
+              Create an Event
+            </h1>
+            <calendar-date
+              class="cally bg-base-100 border border-base-300 shadow-lg rounded-box mb-2"
+              id="my-events-calendar"
+            >
+              <svg
+                aria-label="Previous"
+                class="fill-current size-4"
+                slot="previous"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                ></path>
+              </svg>
+              <svg
+                aria-label="Next"
+                class="fill-current size-4"
+                slot="next"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+              </svg>
+              <calendar-month></calendar-month>
+            </calendar-date>
+            <label class="input">
+              <input type="time" placeholder="Time" />
+              <span class="label">Time</span>
+            </label>
+          </div>
+        </div>
+        <div id="step2" class="carousel-item w-full justify-center"></div>
+        <div id="step3" class="carousel-item w-full justify-center"></div>
+        <div id="step4" class="carousel-item w-full justify-center"></div>
+      </div>
+      <div class="steps my-6">
+        <a href="#step1" class="step step-primary">Register</a>
+        <a href="#step2" class="step step-primary">Choose plan</a>
+        <a class="step">Purchase</a>
+        <a class="step">Receive Product</a>
+      </div>
+    </main>
     <nav id="bottom-navbar"></nav>
   </body>
 </html>

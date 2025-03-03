@@ -25,4 +25,8 @@ function highlightEvents() {
   calendar!.getDayParts = getDayParts;
 }
 
-safeOnLoad(highlightEvents);
+function initMainPage() {
+  highlightEvents();
+}
+
+safeOnLoad(initMainPage);
