@@ -12,15 +12,16 @@
     <link rel="stylesheet" href="/src/index.css" />
     <link href="/styles/style.css" rel="stylesheet" />
 
-    <!--  <script type="module" src="/src/components/index.ts"></script>-->
-    <script type="module" src="/src/scripts/main.js"></script>
+    <script type="module" src="/src/scripts/main"></script>
   </head>
 
-  <body>
+  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
     <!--Header with the hamburger profile and Logo-->
     <header id="top-navbar"></header>
 
-    <main class="container mx-auto pt-8 px-2 md:px-0">
+    <main
+      class="container mx-auto pt-8 px-2 md:px-0 flex flex-col items-center overflow-y-scroll grow-1 py-8"
+    >
       <h1 class="text-3xl my-4 w-full text-center text-gray-400">
         Welcome to
         <span class="text-5xl text-white font-semibold">CalSync</span>
