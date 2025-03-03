@@ -1,12 +1,20 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, PluginOption } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const fullReloadAlways: PluginOption = {
+  name: "full-reload-always",
+  handleHotUpdate({ server }) {
+    server.ws.send({ type: "full-reload" });
+    return [];
+  },
+} as PluginOption;
+
 export default defineConfig({
-  // root: "src",
+  root: "./",
   build: {
     rollupOptions: {
       input: {
@@ -19,7 +27,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    entries: ["/*.html", "src/**/*{.html,.css,.js}"],
+    entries: ["*.html", "src/**/*{.html,.css,.js}"],
   },
-  plugins: [tailwindcss()],
+  plugins: [tailwindcss(), fullReloadAlways],
 });
