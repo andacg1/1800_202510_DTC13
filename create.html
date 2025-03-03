@@ -13,6 +13,7 @@
     <link href="/styles/style.css" rel="stylesheet" />
 
     <script type="module" src="/src/scripts/app"></script>
+    <script type="module" src="/src/scripts/create"></script>
   </head>
   <body class="flex flex-col h-dvh max-h-dvh items-stretch">
     <header id="top-navbar"></header>
@@ -59,15 +60,72 @@
             </label>
           </div>
         </div>
-        <div id="step2" class="carousel-item w-full justify-center"></div>
-        <div id="step3" class="carousel-item w-full justify-center"></div>
-        <div id="step4" class="carousel-item w-full justify-center"></div>
+        <div id="step2" class="carousel-item w-full justify-center">
+          <div>
+            <h1 class="w-full text-2xl mb-2 font-bold" slot="heading">
+              Location
+            </h1>
+            <fieldset
+              class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
+            >
+              <legend class="fieldset-legend">Location</legend>
+
+              <label class="fieldset-label">Title</label>
+              <input type="text" class="input" placeholder="My awesome page" />
+
+              <label class="fieldset-label">Slug</label>
+              <input type="text" class="input" placeholder="my-awesome-page" />
+
+              <label class="fieldset-label">Author</label>
+              <input type="text" class="input" placeholder="Name" />
+            </fieldset>
+          </div>
+        </div>
+        <div id="step3" class="carousel-item w-full justify-center">
+          <div>
+            <h1 class="w-full text-2xl mb-2 font-bold" slot="heading">
+              Attendees
+            </h1>
+            <fieldset
+              class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
+            >
+              <legend class="fieldset-legend">Attendees</legend>
+
+              <label class="fieldset-label">Author</label>
+              <input type="text" class="input" placeholder="Name" />
+            </fieldset>
+          </div>
+        </div>
+        <div id="step4" class="carousel-item w-full justify-center">
+          <div>
+            <h1 class="w-full text-2xl mb-2 font-bold" slot="heading">
+              Details
+            </h1>
+            <fieldset
+              class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
+            >
+              <legend class="fieldset-legend">Event Details</legend>
+
+              <label class="fieldset-label">Title</label>
+              <input type="text" class="input" placeholder="My awesome page" />
+
+              <label class="fieldset-label">Slug</label>
+              <input type="text" class="input" placeholder="my-awesome-page" />
+
+              <label class="fieldset-label">Author</label>
+              <input type="text" class="input" placeholder="Name" />
+
+              <label class="fieldset-label">Discord Channel</label>
+              <input type="text" class="input" placeholder="Discord Channel" />
+            </fieldset>
+          </div>
+        </div>
       </div>
-      <div class="steps my-6">
-        <a href="#step1" class="step step-primary">Register</a>
-        <a href="#step2" class="step step-primary">Choose plan</a>
-        <a class="step">Purchase</a>
-        <a class="step">Receive Product</a>
+      <div class="steps my-6" id="carousel-steps">
+        <a href="#step1" class="step step-primary">When</a>
+        <a href="#step2" class="step step-primary">Where</a>
+        <a href="#step3" class="step">Who</a>
+        <a href="#step4" class="step">Details</a>
       </div>
     </main>
     <nav id="bottom-navbar"></nav>

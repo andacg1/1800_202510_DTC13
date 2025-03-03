@@ -47,3 +47,14 @@ calendar-month {
   }
 
 }
+
+.steps {
+  .step {
+    &:before {
+      transition: all 0.2s ease-in-out;
+    }
+    > .step-icon, &:not(:has(.step-icon)):after {
+      transition: all 0.2s ease-in-out;
+    }
+  }
+}

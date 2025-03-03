@@ -12,4 +12,21 @@ function injectElements() {
   ]);
 }
 
-safeOnLoad(injectElements)
+const defaultAppState: App = {
+  state: {
+    create: {
+      step: 0,
+    },
+  },
+};
+
+function setAppState() {
+  window.App = defaultAppState;
+}
+
+function initApp() {
+  setAppState();
+  injectElements();
+}
+
+safeOnLoad(initApp);
