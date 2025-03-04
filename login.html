@@ -8,65 +8,40 @@
     <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
     <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
 
+    <!-- Tailwind -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
+    <!-- Firebase -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="./src/scripts/firebaseAPI_DTC13.js"></script>
+
+    <!-- Others -->
   </head>
 
   <body class="bg-gray-300">
 
-    <header id="top-navbar"></header>
+    <nav id="top-navbar"></nav>
 
     <main class="justify-center max-w-[700px] mx-auto bg-white rounded-2xl p-5 my-auto h-screen">
       <h1 class="text-3xl text-center my-10">
         Welcome to
         <span class="text-5xl font-semibold">CalSync</span>
       </h1>
-      <form>
-        <div class="mx-auto max-w-[300px]">
-          <p class="mb-2">Username</p>
-          <input
-            class="border border-gray-600 w-full p-2"
-            placeholder="Username"
-          />
-          <p class="my-2">Password</p>
-          <input
-            class="border border-gray-600 w-full p-2"
-            placeholder="********"
-          />
-          <button class="w-full mx-auto bg-blue-400 text-white rounded-2xl p-1 mt-5 mb-2">Login</button>
-          <button class="w-full mx-auto bg-gray-400 text-white rounded-2xl p-1">Register</button>
-        </div>
-      </form>
+      <div id="firebaseui-auth-container"></div>
+      <div class="" id="loader">Loading...</div>
     </main>
 
     <nav id="bottom-navbar"></nav>
 
-    <footer></footer>
-
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCeJgTXjJl21Dk__hp2xaQNeM9rzn2Yf_U",
-        authDomain: "comp1800-eebd5.firebaseapp.com",
-        projectId: "comp1800-eebd5",
-        storageBucket: "comp1800-eebd5.firebasestorage.app",
-        messagingSenderId: "754204633671",
-        appId: "1:754204633671:web:baa0638216c9055529df62"
-      };
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-    </script>
+    <!-- JS Functions -->
+    <script src="./src/scripts/firebaseAPI_DTC13.js"></script>
+    <!-- <script src="./src/scripts/skeleton.js"></script>
+    <script src="./scr/scripts/script.js"></script> -->
+    <script src="./src/scripts/authentication.js"></script>
   </body>
 </html>
