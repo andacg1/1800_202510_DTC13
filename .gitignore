@@ -23,3 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 .npmrc
+firebaseAPI_DTC13.js
