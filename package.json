@@ -12,6 +12,9 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "cally": "^0.8.0",
+    "dotenv": "^16.4.7",
+    "firebase": "^10.14.1",
+    "firebaseui": "^6.1.0",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {
@@ -23,19 +26,5 @@
     "typescript": "~5.7.2",
     "vite": "^6.1.0",
     "vite-plugin-static-copy": "^2.2.0"
-  },
-  "overrides": {
-    "@twind/core": {
-      "typescript": "$typescript"
-    },
-    "@twind/preset-autoprefix": {
-      "typescript": "$typescript"
-    },
-    "@twind/preset-tailwind": {
-      "typescript": "$typescript"
-    },
-    "@twind/with-web-components": {
-      "typescript": "$typescript"
-    }
   }
 }

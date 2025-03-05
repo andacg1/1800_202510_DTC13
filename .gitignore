@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .npmrc
 firebaseAPI_DTC13.js
+!firebaseAPI_DTC13.ts
+
+.env
