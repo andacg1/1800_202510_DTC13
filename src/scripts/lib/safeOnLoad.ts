@@ -8,3 +8,5 @@ export default function safeOnLoad(fn: (e?: Event) => void): void {
     document.addEventListener("load", fn);
   }
 }
+
+window.App.state.create.step

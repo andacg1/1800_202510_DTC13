@@ -1,4 +1,5 @@
 import "cally";
+import { App } from "../../window";
 import { hydrate } from "./hydrate";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
@@ -18,6 +19,9 @@ const defaultAppState: App = {
       step: 0,
     },
   },
+  db: null,
+  app: null,
+  auth: null,
 };
 
 function setAppState() {

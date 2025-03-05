@@ -8,9 +8,9 @@ type App = {
       step: number;
     };
   };
-  db: Firestore;
-  app: FirebaseApp;
-  auth: Auth;
+  db: Firestore | null;
+  app: FirebaseApp | null;
+  auth: Auth | null;
 };
 
 declare global {

@@ -29,3 +29,4 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 window.App = { ...window.App, app, db, auth };
+

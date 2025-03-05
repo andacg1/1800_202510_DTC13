@@ -5,9 +5,9 @@ import { collection, doc, setDoc } from "firebase/firestore";
 var ui = new firebaseui.auth.AuthUI(window.App.auth);
 const db = window.App.db;
 
-var uiConfig = {
+const uiConfig: firebaseui.auth.Config = {
   callbacks: {
-    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+    signInSuccessWithAuthResult: function (authResult: any) {
       console.log(authResult);
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
@@ -27,6 +27,10 @@ var uiConfig = {
         //if new user
         (async () => {
           try {
+            if (!db) {
+              console.error("db is undefined");
+              return;
+            }
             const docRef = doc(collection(db, "users"), user.uid);
             await setDoc(docRef, {
               name: user.displayName, //"users" collection
