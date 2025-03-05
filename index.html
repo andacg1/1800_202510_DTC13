@@ -1,41 +1,49 @@
 <!doctype html>
 <html lang="en" data-theme="sunset">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>CalSync</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CalSync</title>
+    <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
 
-  <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
-  <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/index.css" />
+    <link href="/styles/style.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/src/index.css" />
-  <link href="/styles/style.css" rel="stylesheet" />
+    <script type="module" src="/src/scripts/app"></script>
 
-  <script type="module" src="/src/scripts/app"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
+    />
+  </head>
 
-  <link
-    type="text/css"
-    rel="stylesheet"
-    href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
-  />
-</head>
-
-<body class="flex flex-col h-dvh max-h-dvh items-stretch">
-  <header id="top-navbar"></header>
-  <main id="main-content" class="flex flex-col overflow-y-scrol py-8 px-10 space-y-6 m-auto">
-    <h1 class="font-extrabold flex items-end">
-      <span class="text-blue-400 text-5xl">Cal</span>
-      <span class="text-4xl">Sync</span>
-    </h1>
-    <h3 class="text-4xl font-extrabold">
-      <span>Stay Organized</span><br>
-      <span class="text-blue-400 text-4xl">Stay Synced</span>
-    </h3>
-    <a class="bg-emerald-600 rounded-full py-2 px-4 hover:bg-emerald-900 mt-2 w-fit" href="login.html">Get Started!</a>
-  </main>
-  <nav id="bottom-navbar"></nav>
-</body>
-
+  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
+    <header id="top-navbar"></header>
+    <main
+      id="main-content"
+      class="flex flex-col overflow-y-scrol py-8 px-10 space-y-6 m-auto"
+    >
+      <h1 class="font-extrabold flex items-end">
+        <span class="text-blue-400 text-5xl">Cal</span>
+        <span class="text-4xl">Sync</span>
+      </h1>
+      <h3 class="text-4xl font-extrabold">
+        <span>Stay Organized</span><br />
+        <span class="text-blue-400 text-4xl">Stay Synced</span>
+      </h3>
+      <a
+        class="bg-emerald-600 rounded-full py-2 px-4 hover:bg-emerald-900 mt-2 w-fit"
+        href="login.html"
+        >Get Started!</a
+      >
+    </main>
+    <nav id="bottom-navbar"></nav>
+  </body>
 </html>
