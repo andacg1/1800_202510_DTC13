@@ -65,7 +65,12 @@
               <calendar-month></calendar-month>
             </calendar-date>
             <label class="input">
-              <input type="time" placeholder="Time" />
+              <input
+                type="time"
+                placeholder="Time"
+                name="event-time"
+                form="create-event-form"
+              />
               <span class="label">Time</span>
             </label>
           </div>
@@ -73,21 +78,38 @@
         <div id="step2" class="carousel-item w-full justify-center">
           <div>
             <h1 class="w-full text-2xl mb-2 font-bold" slot="heading">
-              Location
+              Details
             </h1>
             <fieldset
               class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
             >
-              <legend class="fieldset-legend">Location</legend>
+              <legend class="fieldset-legend">Details</legend>
 
               <label class="fieldset-label">Title</label>
-              <input type="text" class="input" placeholder="My awesome page" />
+              <input
+                type="text"
+                class="input"
+                name="event-title"
+                placeholder="My Event"
+                form="create-event-form"
+              />
 
-              <label class="fieldset-label">Slug</label>
-              <input type="text" class="input" placeholder="my-awesome-page" />
-
-              <label class="fieldset-label">Author</label>
-              <input type="text" class="input" placeholder="Name" />
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Description</legend>
+                <textarea
+                  class="textarea h-24"
+                  placeholder="Best Event Ever!"
+                  name="event-description"
+                  form="create-event-form"
+                ></textarea>
+              </fieldset>
+              <button
+                class="btn btn-success mt-4"
+                form="create-event-form"
+                name="create-event"
+              >
+                Create Event
+              </button>
             </fieldset>
           </div>
         </div>
@@ -133,9 +155,9 @@
       </div>
       <div class="steps my-6" id="carousel-steps">
         <a href="#step1" class="step step-primary">When</a>
-        <a href="#step2" class="step step-primary">Where</a>
-        <a href="#step3" class="step">Who</a>
-        <a href="#step4" class="step">Details</a>
+        <a href="#step2" class="step step-primary">Details</a>
+        <!--        <a href="#step3" class="step">Who</a>-->
+        <!--        <a href="#step4" class="step">Details</a>-->
       </div>
     </main>
     <nav id="bottom-navbar"></nav>

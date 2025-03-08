@@ -2,8 +2,9 @@
 import { EmailAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import { collection, doc, setDoc } from "firebase/firestore";
+import store from "./store.ts";
 var ui = new firebaseui.auth.AuthUI(window.App.auth);
-const db = window.App.db;
+const db = store.getState().db;
 
 const uiConfig: firebaseui.auth.Config = {
   callbacks: {
@@ -21,6 +22,10 @@ const uiConfig: firebaseui.auth.Config = {
       // The Firestore rules must allow the user to write.
       //------------------------------------------------------------------------------------------
       const user = authResult.user; // get the user object from the Firebase authentication database
+
+      // Save User ID in Zustand store
+      store.setState({ userId: user.uid });
+
       console.log(authResult.additionalUserInfo);
       // if (authResult.additionalUserInfo.isNewUser) {         //if new user
       if (user.name !== null) {

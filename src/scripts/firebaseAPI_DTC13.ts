@@ -3,6 +3,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import store from "./store";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,5 +29,4 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-window.App = { ...window.App, app, db, auth };
-
+store.setState({ db, auth });
