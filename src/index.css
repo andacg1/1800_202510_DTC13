@@ -27,6 +27,10 @@ body {
   }
 }
 
+#fake-dock {
+  height: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
 calendar-month {
   &::part(event) {
     /* Styles to apply to the `foo` part */
