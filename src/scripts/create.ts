@@ -1,4 +1,5 @@
 import { collection, doc, setDoc, getDoc } from "firebase/firestore";
+import { getUserRef } from "./lib/auth.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { toast } from "./lib/toast.ts";
 import store, { AppStoreState, ShortISODate, Time } from "./store.ts";
@@ -68,7 +69,7 @@ function addEventDescriptionListener(formElement: HTMLFormElement) {
 function addSubmitListener(formElement: HTMLFormElement) {
   formElement.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const { draftEvent, userId, db } = store.getState();
+    const { draftEvent, db } = store.getState();
     if (!db) {
       throw Error("Could not find Firestore Database");
     }
@@ -82,10 +83,10 @@ function addSubmitListener(formElement: HTMLFormElement) {
 
     const [year, month, day] = startDate.split("-").map((s) => Number(s));
     const [hours, minutes] = startTime.split(":").map((s) => Number(s));
-    const eventDate = new Date(year, month, day, hours, minutes);
+    const eventDate = new Date(year, month - 1, day, hours, minutes);
 
     const newEventRef = doc(collection(db, "events"));
-    const userRef = doc(db, "users", userId);
+    const userRef = await getUserRef();
 
     try {
       await setDoc(newEventRef, {
@@ -99,7 +100,7 @@ function addSubmitListener(formElement: HTMLFormElement) {
       toast("Event created successfully.", "success");
       setTimeout(() => {
         window.location.assign("/main.html");
-      }, 2000);
+      }, 500);
     } catch (e) {
       toast("Event creation failed.", "error");
     }
