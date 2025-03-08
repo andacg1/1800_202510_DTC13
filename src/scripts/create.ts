@@ -10,6 +10,27 @@ function setupHashListener() {
   });
 }
 
+const handleCalendarChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  console.log(target?.value);
+  const { draftEvent } = window.App.state.create;
+
+  Object.assign(draftEvent, {
+    startDate: new Date(target?.value),
+  });
+};
+
+function setupCalendarListeners() {
+  const calendar = document.getElementById("create-event-calendar");
+  if (!calendar) {
+    console.error("Calendar element not found");
+  } else {
+    calendar.addEventListener("change", handleCalendarChange);
+  }
+
+
+}
+
 function syncStep() {
   const parsedUrl = new URL(window.location.href);
   const frag = parsedUrl.hash;
@@ -45,6 +66,7 @@ function syncStep() {
 function initCreatePage() {
   setupHashListener();
   syncStep();
+  setupCalendarListeners();
 }
 
 safeOnLoad(initCreatePage);

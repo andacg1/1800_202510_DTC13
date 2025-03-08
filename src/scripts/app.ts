@@ -17,6 +17,7 @@ const defaultAppState: App = {
   state: {
     create: {
       step: 0,
+      draftEvent: {},
     },
   },
   db: null,
