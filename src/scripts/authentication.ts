@@ -3,7 +3,7 @@ import { EmailAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import { collection, doc, setDoc } from "firebase/firestore";
 import store from "./store.ts";
-var ui = new firebaseui.auth.AuthUI(window.App.auth);
+const ui = new firebaseui.auth.AuthUI(store.getState().auth);
 const db = store.getState().db;
 
 const uiConfig: firebaseui.auth.Config = {
