@@ -29,7 +29,26 @@
     <main
       id="main-content"
       class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
-    ></main>
+    >
+      <form id="user-details-form" class="flex flex-col gap-4">
+        <h1 class="text-2xl font-semibold self-start">My Profile</h1>
+
+        <label class="input">
+          <span class="label">Email</span>
+          <input
+            type="email"
+            placeholder="myemail@gmail.com"
+            name="user-email"
+            disabled
+          />
+        </label>
+
+        <label class="input">
+          <span class="label">Name</span>
+          <input type="text" placeholder="Name" name="user-name" />
+        </label>
+      </form>
+    </main>
     <div id="fake-dock"></div>
     <nav id="bottom-navbar"></nav>
   </body>

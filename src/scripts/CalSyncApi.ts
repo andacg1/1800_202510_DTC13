@@ -39,8 +39,12 @@ export class CalSyncApi {
     }
   }
   static converter = <T>() => ({
-    toFirestore: (data: T) => data,
-    fromFirestore: (snap: QueryDocumentSnapshot) => snap.data() as T,
+    toFirestore: (data: WithId<T>) => data,
+    fromFirestore: (snap: QueryDocumentSnapshot) =>
+      ({
+        id: snap.id,
+        ...(snap.data() as T),
+      }) as WithId<T>,
   });
   static collection = <T extends WithFieldValue<DocumentData>>(
     collectionPath: string,
@@ -110,9 +114,11 @@ export class CalSyncApi {
     }
   }
 
-  static async getUser(): Promise<UserData | undefined> {
+  static async getUser(): Promise<WithId<UserData> | undefined> {
     const userRef = await getUserRef();
-    const userSnapshot = await getDoc(userRef);
+    const userSnapshot = await getDoc(
+      userRef.withConverter(CalSyncApi.converter<UserData>()),
+    );
 
     return userSnapshot.data();
   }
@@ -146,7 +152,17 @@ export class CalSyncApi {
     );
 
     await updateDoc(eventRef, {
-      ...event
+      ...event,
+    });
+  }
+
+  static async updateUser(userId: string, user: Partial<UserData>) {
+    const userRef = doc(this.db, "users", userId).withConverter(
+      CalSyncApi.userConverter,
+    );
+
+    await updateDoc(userRef, {
+      ...user,
     });
   }
 }
