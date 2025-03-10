@@ -1,8 +1,22 @@
-import { collection, doc, type Firestore, setDoc } from "firebase/firestore";
+import type { Auth } from "firebase/auth";
+
+import {
+  collection,
+  doc,
+  DocumentData,
+  type Firestore,
+  getDoc,
+  getDocs,
+  query,
+  type QueryDocumentSnapshot,
+  setDoc,
+  where,
+  WithFieldValue,
+} from "firebase/firestore";
+import { EventData, UserData } from "./Api";
 import { getUserRef } from "./lib/auth.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
-import type { Auth } from "firebase/auth";
 
 export class CalSyncApi {
   static #store: CalSyncStore;
@@ -22,6 +36,15 @@ export class CalSyncApi {
       throw Error("Could not find Firebase Auth");
     }
   }
+  static converter = <T>() => ({
+    toFirestore: (data: T) => data,
+    fromFirestore: (snap: QueryDocumentSnapshot) => snap.data() as T,
+  });
+  static collection = <T extends WithFieldValue<DocumentData>>(
+    collectionPath: string,
+  ) => collection(this.db, collectionPath).withConverter(this.converter<T>());
+  static userConverter = this.converter<UserData>();
+  static eventConverter = this.converter<EventData>();
 
   static async createEvent({
     title,
@@ -59,5 +82,31 @@ export class CalSyncApi {
     } catch (e) {
       toast("Event creation failed.", "error");
     }
+  }
+
+  static async getUser(): Promise<UserData | undefined> {
+    const userRef = await getUserRef();
+    const userSnapshot = await getDoc(userRef);
+
+    return userSnapshot.data();
+  }
+
+  static async getUserEvents() {
+    const q = query(
+      this.collection<EventData>("events"),
+      where("user", "==", await getUserRef()),
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => doc.data());
+  }
+
+  static async getEvent(eventId: string) {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      CalSyncApi.converter<EventData>(),
+    );
+
+    const eventSnapshot = await getDoc(eventRef);
+    return eventSnapshot.data();
   }
 }

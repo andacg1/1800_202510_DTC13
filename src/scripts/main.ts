@@ -1,4 +1,5 @@
 import { getDoc, query, where, collection, getDocs } from "firebase/firestore";
+import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { toShortISO } from "./lib/temporal.ts";
 import store from "./store.ts";
@@ -74,20 +75,8 @@ const buildEventElement = ({
   return rowEl;
 };
 
-async function getUserEvents() {
-  const { db } = store.getState();
-
-  const q = query(
-    collection(db, "events"),
-    where("user", "==", await getUserRef()),
-  );
-
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => doc.data());
-}
-
 async function insertUserEvents() {
-  const events = await getUserEvents();
+  const events = await CalSyncApi.getUserEvents();
   console.log(events);
   const container = document.getElementById("main-event-list");
   const rows = events.map((event) => buildEventElement(event as UserEventData));

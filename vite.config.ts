@@ -22,6 +22,7 @@ export default defineConfig({
         main: resolve(__dirname, "main.html"),
         login: resolve(__dirname, "login.html"),
         create: resolve(__dirname, "create.html"),
+        profile: resolve(__dirname, "profile.html"),
       },
       plugins: [],
     },

@@ -1,6 +1,8 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { doc } from "firebase/firestore";
+import { UserData } from "../Api";
+import { CalSyncApi } from "../CalSyncApi.ts";
 import store from "../store.ts";
 
 export async function getUserRef() {
@@ -32,5 +34,5 @@ export async function getUserRef() {
     });
   });
 
-  return doc(db, "users", uid);
+  return doc(db, "users", uid).withConverter(CalSyncApi.converter<UserData>());
 }
