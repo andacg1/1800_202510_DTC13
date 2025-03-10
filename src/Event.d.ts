@@ -6,4 +6,5 @@ type UserEventData = {
   };
   description: string;
   title: string;
+  id: string;
 };

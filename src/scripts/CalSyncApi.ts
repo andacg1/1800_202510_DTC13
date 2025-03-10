@@ -13,7 +13,7 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
-import { EventData, UserData } from "./Api";
+import { CustomEventData, EventData, UserData, WithId } from "./Api";
 import { getUserRef } from "./lib/auth.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
@@ -25,6 +25,7 @@ export class CalSyncApi {
   private constructor() {
     throw new Error("CalSyncApi is a static class");
   }
+
   static {
     this.#store = store;
     this.db = store.getState().db;
@@ -44,7 +45,31 @@ export class CalSyncApi {
     collectionPath: string,
   ) => collection(this.db, collectionPath).withConverter(this.converter<T>());
   static userConverter = this.converter<UserData>();
-  static eventConverter = this.converter<EventData>();
+  static eventConverter = {
+    toFirestore: (data: CustomEventData) => data,
+    fromFirestore: (snap: QueryDocumentSnapshot) => {
+      const data = snap.data() as EventData;
+      return {
+        ...data,
+        id: snap.id,
+        startTimeParts: this.getDateParts(data.startTime.seconds),
+      } as CustomEventData;
+    },
+  };
+
+  static getDateParts(seconds: number) {
+    const date = new Date(seconds * 1000);
+    const [dateISO, timeISO, amPm] = date.toLocaleString("en-US").split(" ");
+    const [hours, minutes] = timeISO.split(":");
+    return {
+      date,
+      dateISO,
+      timeISO,
+      amPm,
+      hours,
+      minutes,
+    };
+  }
 
   static async createEvent({
     title,
@@ -91,22 +116,26 @@ export class CalSyncApi {
     return userSnapshot.data();
   }
 
-  static async getUserEvents() {
+  static async getUserEvents(): Promise<WithId<EventData>[]> {
     const q = query(
       this.collection<EventData>("events"),
       where("user", "==", await getUserRef()),
-    );
+    ).withConverter(CalSyncApi.eventConverter);
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => doc.data());
+    return querySnapshot.docs.map((doc) =>
+      CalSyncApi.eventConverter.fromFirestore(doc),
+    );
   }
 
-  static async getEvent(eventId: string) {
+  static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
     const eventRef = doc(this.db, "events", eventId).withConverter(
-      CalSyncApi.converter<EventData>(),
+      CalSyncApi.eventConverter,
     );
 
-    const eventSnapshot = await getDoc(eventRef);
+    const eventSnapshot = await getDoc(
+      eventRef.withConverter(CalSyncApi.eventConverter),
+    );
     return eventSnapshot.data();
   }
 }

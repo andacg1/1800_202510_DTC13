@@ -35,23 +35,28 @@ const buildEventElement = ({
   duration,
   startTime,
   title,
+  id,
 }: UserEventData) => {
   // TODO: add nanoseconds
-  const date = new Date(startTime.seconds * 1000);
-  const [_dateISO, timeISO, period] = date.toLocaleString("en-US").split(" ");
-  const [hours, minutes] = timeISO.split(":");
+  // const date = new Date(startTime.seconds * 1000);
+  // const [_dateISO, timeISO, period] = date.toLocaleString("en-US").split(" ");
+  // const [hours, minutes] = timeISO.split(":");
+  const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
+    startTime.seconds,
+  );
 
-  const rowEl = document.createElement("li");
+  const rowEl = document.createElement("a");
   rowEl.classList.add("list-row");
+  rowEl.href = `/event.html?id=${id}`;
   rowEl.innerHTML = `
             <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
-<div class="">${date.getDate()}</div>
-<div class="text-sm text-primary">${date.toString().split(" ")[1]}</div>
-</div>
+            <div class="">${date.getDate()}</div>
+            <div class="text-sm text-primary">${date.toString().split(" ")[1]}</div>
+            </div>
             <div class="list-col-grow gap-2 flex flex-col pt-2">
               <div>${title}</div>
               <div class="text-xs uppercase font-semibold opacity-60">
-                ${hours}:${minutes} ${period}
+                ${hours}:${minutes} ${amPm}
               </div>
             </div>
             <button class="btn btn-square btn-ghost">

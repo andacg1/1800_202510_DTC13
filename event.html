@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-theme="sunset">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>CalSync</title>
+
+    <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/src/index.css" />
+    <link href="/styles/style.css" rel="stylesheet" />
+
+    <script type="module" src="/src/scripts/app"></script>
+    <script type="module" src="/src/scripts/eventPage"></script>
+
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
+    />
+  </head>
+  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
+    <header id="top-navbar"></header>
+    <main
+      id="main-content"
+      class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
+    >
+      <form id="event-details-form" class="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Event Title"
+          class="input input-ghost"
+          name="event-title"
+        />
+        <textarea
+          class="textarea h-24"
+          placeholder="Event Description"
+          name="event-description"
+        ></textarea>
+
+        <div class="join">
+          <div>
+            <label class="input validator join-item">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="24"
+                height="24"
+                stroke-width="2"
+              >
+                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                <path d="M12 12l3 2"></path>
+                <path d="M12 7v5"></path>
+              </svg>
+              <input
+                type="number"
+                placeholder="Duration (minutes)"
+                name="event-duration"
+              />
+            </label>
+          </div>
+          <div class="btn btn-disabled join-item">minutes</div>
+        </div>
+
+        <!--        TODO: Start date/time          -->
+
+        <div class="divider"></div>
+        <div
+          class="grid auto-cols-max grid-flow-col gap-5 text-center"
+          id="countdown-container"
+        >
+          <div class="flex flex-col">
+            <span class="countdown font-mono text-5xl">
+              <span
+                style="--value: 0"
+                aria-live="polite"
+                aria-label="0"
+                id="countdown-days"
+                >0</span
+              >
+            </span>
+            days
+          </div>
+          <div class="flex flex-col">
+            <span class="countdown font-mono text-5xl">
+              <span
+                style="--value: 0"
+                aria-live="polite"
+                aria-label="0"
+                id="countdown-hours"
+                >0</span
+              >
+            </span>
+            hours
+          </div>
+          <div class="flex flex-col">
+            <span class="countdown font-mono text-5xl">
+              <span
+                style="--value: 0"
+                aria-live="polite"
+                aria-label="0"
+                id="countdown-minutes"
+                >0</span
+              >
+            </span>
+            min
+          </div>
+          <div class="flex flex-col">
+            <span class="countdown font-mono text-5xl">
+              <span
+                style="--value: 0"
+                aria-live="polite"
+                aria-label="0"
+                id="countdown-seconds"
+                >0</span
+              >
+            </span>
+            sec
+          </div>
+          <div class="flex-col justify-end hidden" id="countdown-ago">
+            <span class="countdown font-mono text-3xl text-secondary">ago</span>
+          </div>
+        </div>
+      </form>
+    </main>
+    <div id="fake-dock"></div>
+    <nav id="bottom-navbar"></nav>
+  </body>
+</html>
