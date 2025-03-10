@@ -43,6 +43,6 @@ const store = createStore<AppStore>()(
     db: null,
   })),
 );
-// const { getState, setState, subscribe, getInitialState } = store;
+export type CalSyncStore = typeof store;
 
 export default store;

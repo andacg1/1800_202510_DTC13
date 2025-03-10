@@ -1,7 +1,5 @@
-import { collection, doc, setDoc, getDoc } from "firebase/firestore";
-import { getUserRef } from "./lib/auth.ts";
+import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
-import { toast } from "./lib/toast.ts";
 import store, { AppStoreState, ShortISODate, Time } from "./store.ts";
 
 function setupHashListener() {
@@ -69,10 +67,7 @@ function addEventDescriptionListener(formElement: HTMLFormElement) {
 function addSubmitListener(formElement: HTMLFormElement) {
   formElement.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const { draftEvent, db } = store.getState();
-    if (!db) {
-      throw Error("Could not find Firestore Database");
-    }
+    const { draftEvent } = store.getState();
     const { startDate, startTime, title, description, duration } = draftEvent;
 
     if (!startTime || !startDate) {
@@ -81,29 +76,13 @@ function addSubmitListener(formElement: HTMLFormElement) {
       return;
     }
 
-    const [year, month, day] = startDate.split("-").map((s) => Number(s));
-    const [hours, minutes] = startTime.split(":").map((s) => Number(s));
-    const eventDate = new Date(year, month - 1, day, hours, minutes);
-
-    const newEventRef = doc(collection(db, "events"));
-    const userRef = await getUserRef();
-
-    try {
-      await setDoc(newEventRef, {
-        title,
-        description,
-        duration,
-        startTime: eventDate,
-        user: userRef,
-      });
-
-      toast("Event created successfully.", "success");
-      setTimeout(() => {
-        window.location.assign("/main.html");
-      }, 500);
-    } catch (e) {
-      toast("Event creation failed.", "error");
-    }
+    await CalSyncApi.createEvent({
+      title,
+      description,
+      duration,
+      startDate,
+      startTime,
+    });
   });
 }
 
