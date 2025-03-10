@@ -1,6 +1,7 @@
 import { CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
+import store, { Time } from "./store.ts";
 
 async function fetchEventData() {
   const params = new URLSearchParams(document.location.search);
@@ -78,6 +79,22 @@ function updateEventPage(event: CustomEventData) {
   titleEl.value = event.title;
   descriptionEl.value = event.description;
   durationEl.value = String(event.duration);
+
+  // Set event listeners
+  titleEl.addEventListener("change", async (e) => {
+    const target = e.target as HTMLInputElement;
+    await CalSyncApi.updateEvent(event.id, { title: target.value });
+  });
+
+  descriptionEl.addEventListener("change", async (e) => {
+    const target = e.target as HTMLInputElement;
+    await CalSyncApi.updateEvent(event.id, { description: target.value });
+  });
+
+  durationEl.addEventListener("change", async (e) => {
+    const target = e.target as HTMLInputElement;
+    await CalSyncApi.updateEvent(event.id, { duration: Number(target.value) });
+  });
 }
 
 async function initEventPage() {

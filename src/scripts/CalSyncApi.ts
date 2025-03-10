@@ -10,6 +10,7 @@ import {
   query,
   type QueryDocumentSnapshot,
   setDoc,
+  updateDoc,
   where,
   WithFieldValue,
 } from "firebase/firestore";
@@ -137,5 +138,15 @@ export class CalSyncApi {
       eventRef.withConverter(CalSyncApi.eventConverter),
     );
     return eventSnapshot.data();
+  }
+
+  static async updateEvent(eventId: string, event: Partial<EventData>) {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      CalSyncApi.eventConverter,
+    );
+
+    await updateDoc(eventRef, {
+      ...event
+    });
   }
 }
