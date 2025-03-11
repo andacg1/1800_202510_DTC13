@@ -49,7 +49,8 @@ function checkAuthState() {
     } else {
       // User is signed out
       // ...
-      if (!String(window.location).includes("login.html")) {
+      const publicPages = ["login.html", "index.html"];
+      if (!publicPages.some((page) => String(window.location).includes(page))) {
         window.location.assign("/login.html");
       }
     }
