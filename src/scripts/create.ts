@@ -157,10 +157,24 @@ function updateInputs(state: AppStoreState) {
   calendar.value = state.draftEvent.startDate || "";
 }
 
+function setupTagInput() {
+  // const autoCompleteJS = new autoComplete({
+  //   selector: "#tags-auto-complete",
+  //   src: [
+  //     { food: "Sauce - Thousand Island" },
+  //     { food: "Wild Boar - Tenderloin" },
+  //     { food: "Goat - Whole Cut" },
+  //   ],
+  //   // Data source 'Object' key to be searched
+  //   keys: ["food"],
+  // });
+}
+
 function initCreatePage() {
   setupHashListener();
   syncStep();
   setupCalendarListeners();
+  setupTagInput();
   store.subscribe(updateInputs);
 }
 

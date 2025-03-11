@@ -14,7 +14,14 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
-import { CustomEventData, EventData, UserData, WithId } from "./Api";
+import {
+  CustomEventData,
+  EventData,
+  TagData,
+  TagName,
+  UserData,
+  WithId,
+} from "./Api";
 import { getUserRef } from "./lib/auth.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
@@ -46,10 +53,12 @@ export class CalSyncApi {
         ...(snap.data() as T),
       }) as WithId<T>,
   });
+
   static collection = <T extends WithFieldValue<DocumentData>>(
     collectionPath: string,
   ) => collection(this.db, collectionPath).withConverter(this.converter<T>());
   static userConverter = this.converter<UserData>();
+  static tagConverter = this.converter<TagData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
@@ -164,5 +173,16 @@ export class CalSyncApi {
     await updateDoc(userRef, {
       ...user,
     });
+  }
+
+  static async getAllTags() {
+    const q = query(this.collection<EventData>("tags")).withConverter(
+      CalSyncApi.tagConverter,
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) =>
+      CalSyncApi.tagConverter.fromFirestore(doc),
+    );
   }
 }

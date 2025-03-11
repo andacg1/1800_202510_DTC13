@@ -2,14 +2,8 @@ import { UserData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
-const user = await CalSyncApi.getUser();
-console.log(user);
-
-const events = await CalSyncApi.getUserEvents();
-console.log(events);
-
-const event = await CalSyncApi.getEvent("fFfwAB5aR9AdOL4aBpdt");
-console.log(event);
+const tags = await CalSyncApi.getAllTags();
+console.log(tags);
 
 async function fetchUserData() {
   const user = await CalSyncApi.getUser();
