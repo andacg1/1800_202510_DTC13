@@ -17,6 +17,7 @@
 
     <script type="module" src="/src/scripts/app"></script>
     <script type="module" src="/src/scripts/profile"></script>
+    <script src="./src/scripts/profile.js"></script>
 
     <link
       type="text/css"
@@ -28,14 +29,14 @@
     <header id="top-navbar"></header>
     <main
       id="main-content"
-      class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
-    >
+      class="flex flex-col items-center overflow-y-scroll grow-1 py-8">
       <form id="user-details-form" class="flex flex-col gap-4">
         <h1 class="text-2xl font-semibold self-start">My Profile</h1>
 
         <label class="input">
           <span class="label">Email</span>
           <input
+            id="emailInput"
             type="email"
             placeholder="myemail@gmail.com"
             name="user-email"
@@ -45,10 +46,9 @@
 
         <label class="input">
           <span class="label">Name</span>
-          <input type="text" placeholder="Name" name="user-name" />
+          <input id="nameInput" type="text" placeholder="Name" name="user-name" disabled/>
         </label>
-
-        <div class="d-flex justify-content-end mt-5">
+        <div class="ml-auto">
           <button type="button" class="btn btn-secondary" onclick="editUserInfo()">Edit</button>
           <span style="width: 10px"></span>
           <button type="button" class="btn btn-info" onclick="saveUserInfo()">Save</button>
