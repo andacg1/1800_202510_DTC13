@@ -1,7 +1,6 @@
 import { CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
-import store, { Time } from "./store.ts";
 
 async function fetchEventData() {
   const params = new URLSearchParams(document.location.search);

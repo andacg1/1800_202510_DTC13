@@ -17,6 +17,7 @@ import {
 import {
   CustomEventData,
   EventData,
+  FaqData,
   TagData,
   TagName,
   UserData,
@@ -59,6 +60,7 @@ export class CalSyncApi {
   ) => collection(this.db, collectionPath).withConverter(this.converter<T>());
   static userConverter = this.converter<UserData>();
   static tagConverter = this.converter<TagData>();
+  static faqConverter = this.converter<FaqData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
@@ -114,7 +116,7 @@ export class CalSyncApi {
         user: userRef,
       });
 
-      toast("Event created successfully.", "success");
+      toast("Event successfully updated.", "success");
       setTimeout(() => {
         window.location.assign("/main.html");
       }, 500);
@@ -165,6 +167,8 @@ export class CalSyncApi {
     await updateDoc(eventRef, {
       ...event,
     });
+
+    toast("Event successfully updated.", "success");
   }
 
   static async updateUser(userId: string, user: Partial<UserData>) {
@@ -175,6 +179,8 @@ export class CalSyncApi {
     await updateDoc(userRef, {
       ...user,
     });
+
+    toast("User successfully updated.", "success");
   }
 
   static async getAllTags() {
@@ -185,6 +191,17 @@ export class CalSyncApi {
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((doc) =>
       CalSyncApi.tagConverter.fromFirestore(doc),
+    );
+  }
+
+  static async getAllFaqs() {
+    const q = query(this.collection<FaqData>("faqs")).withConverter(
+      CalSyncApi.faqConverter,
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) =>
+      CalSyncApi.faqConverter.fromFirestore(doc),
     );
   }
 }

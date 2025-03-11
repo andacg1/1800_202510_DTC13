@@ -33,3 +33,8 @@ export type DateParts = {
 export type CustomEventData = WithId<EventData> & {
   startTimeParts: DateParts;
 };
+
+export type FaqData = {
+  title: string;
+  description: string;
+};
