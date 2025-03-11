@@ -7,12 +7,9 @@ console.log(tags);
 
 async function fetchUserData() {
   const user = await CalSyncApi.getUser();
-  console.log("Fetched user data:", user); // Debugging
-
   if (!user) {
     throw new Error("Could not find user");
   }
-
   return user;
 }
 
@@ -46,5 +43,6 @@ async function initProfilePage() {
   const user = await fetchUserData();
   updateProfile(user);
 }
-
+console.log(123)
 safeOnLoad(initProfilePage);
+
