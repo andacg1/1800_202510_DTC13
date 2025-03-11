@@ -155,6 +155,8 @@ export class CalSyncApi {
     return eventSnapshot.data();
   }
 
+  static async findEvents(searchFor: string): Promise<WithId<EventData>[]> {}
+
   static async updateEvent(eventId: string, event: Partial<EventData>) {
     const eventRef = doc(this.db, "events", eventId).withConverter(
       CalSyncApi.eventConverter,

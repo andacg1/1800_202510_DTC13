@@ -23,6 +23,8 @@ export default defineConfig({
         login: resolve(__dirname, "login.html"),
         create: resolve(__dirname, "create.html"),
         profile: resolve(__dirname, "profile.html"),
+        support: resolve(__dirname, "support.html"),
+        search: resolve(__dirname, "search.html"),
       },
       plugins: [],
     },

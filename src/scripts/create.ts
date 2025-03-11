@@ -1,6 +1,10 @@
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store, { AppStoreState, ShortISODate, Time } from "./store.ts";
+import {
+  type MultipleSelectInstance,
+  multipleSelect,
+} from "multiple-select-vanilla";
 
 function setupHashListener() {
   addEventListener("hashchange", (e) => {
@@ -157,18 +161,7 @@ function updateInputs(state: AppStoreState) {
   calendar.value = state.draftEvent.startDate || "";
 }
 
-function setupTagInput() {
-  // const autoCompleteJS = new autoComplete({
-  //   selector: "#tags-auto-complete",
-  //   src: [
-  //     { food: "Sauce - Thousand Island" },
-  //     { food: "Wild Boar - Tenderloin" },
-  //     { food: "Goat - Whole Cut" },
-  //   ],
-  //   // Data source 'Object' key to be searched
-  //   keys: ["food"],
-  // });
-}
+function setupTagInput() {}
 
 function initCreatePage() {
   setupHashListener();
