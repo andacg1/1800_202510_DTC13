@@ -2,9 +2,6 @@ import { UserData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
-const tags = await CalSyncApi.getAllTags();
-console.log(tags);
-
 async function fetchUserData() {
   const user = await CalSyncApi.getUser();
   if (!user) {
@@ -43,6 +40,8 @@ async function initProfilePage() {
   const user = await fetchUserData();
   updateProfile(user);
 }
+
+
 
 safeOnLoad(initProfilePage);
 
