@@ -7,9 +7,6 @@ import safeOnLoad from "./lib/safeOnLoad.ts";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import store from "./store.ts";
 
-// Set the base path to the folder you copied Shoelace's assets to
-console.log("SCRIPT");
-
 function injectElements() {
   return Promise.allSettled([
     hydrate("/src/components/bottom-navbar.html", "#bottom-navbar"),

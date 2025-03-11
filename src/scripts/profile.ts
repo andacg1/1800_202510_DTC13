@@ -2,17 +2,11 @@ import { UserData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
-const tags = await CalSyncApi.getAllTags();
-console.log(tags);
-
 async function fetchUserData() {
   const user = await CalSyncApi.getUser();
-  console.log("Fetched user data:", user); // Debugging
-
   if (!user) {
     throw new Error("Could not find user");
   }
-
   return user;
 }
 
@@ -47,4 +41,7 @@ async function initProfilePage() {
   updateProfile(user);
 }
 
+
+
 safeOnLoad(initProfilePage);
+
