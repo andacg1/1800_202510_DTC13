@@ -54,10 +54,30 @@ function checkAuthState() {
   });
 }
 
+function updateDockLinks() {
+  const dockEl = document.getElementById("bottom-navbar");
+  const dockLinks = dockEl?.querySelectorAll("a");
+  if (!dockLinks) {
+    console.error("Could not find dock links");
+    return;
+  }
+  for (const dockLink of dockLinks) {
+    const href = dockLink.href;
+    if (String(window.location).includes(href)) {
+      dockLink.classList.add("dock-active");
+    } else {
+      dockLink.classList.remove("dock-active");
+    }
+  }
+}
+
 function initApp() {
   setAppState();
-  injectElements();
+  injectElements().then(() => {
+    updateDockLinks();
+  });
   checkAuthState();
+  updateDockLinks();
 }
 
 safeOnLoad(initApp);
