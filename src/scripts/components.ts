@@ -1,17 +1,19 @@
-export const EventElement = ({
-  date,
-  title,
-  hours,
-  minutes,
-  amPm,
-}: {
-  date: Date;
-  title: string;
-  amPm: "am" | "pm";
-  hours: string;
-  minutes: string;
-}) => {
-  return `
+import type { EventData, WithId } from "./Api";
+import { CalSyncApi } from "./CalSyncApi.ts";
+
+export function createHtmlElement(html: string) {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  return template.content.firstElementChild as Element;
+}
+
+export const EventElement = (event: WithId<EventData>) => {
+  const { startTime, id, title, description, duration, user } = event;
+  const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
+    startTime.seconds,
+  );
+  return createHtmlElement(`
+            <a href="/event.html?id=${id}" class="list-row">
             <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
             <div class="">${date.getDate()}</div>
             <div class="text-sm text-primary">${
@@ -41,5 +43,6 @@ export const EventElement = ({
                 </g>
               </svg>
             </button>
-  `;
+            </a>
+  `);
 };

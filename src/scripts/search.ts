@@ -1,7 +1,10 @@
+import { EventData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
-import { EventElement } from "./components.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store from "./store.ts";
+import { autocomplete } from "@algolia/autocomplete-js";
+
+import "@algolia/autocomplete-theme-classic";
 
 //let events: Awaited<ReturnType<typeof CalSyncApi.getUserEvents>> = [];
 
@@ -26,34 +29,103 @@ const filterEvents = (query: string) =>
       );
     });
 
-function addSearchListener() {
-  const searchEl = document.getElementById(
-    "event-search-input",
-  ) as HTMLInputElement;
-  const resultsContainerEl = document.getElementById(
-    "search-results-container",
-  ) as HTMLElement;
+function enableAutocomplete() {
+  autocomplete<WithId<EventData>>({
+    container: "#autocomplete",
+    openOnFocus: true,
+    plugins: [],
 
-  searchEl.addEventListener("keyup", () => {
-    const filteredEvents = filterEvents(searchEl.value);
-    const fragment = document.createDocumentFragment();
-    for (const event of filteredEvents) {
-      const eventEl = document.createElement("a");
-      eventEl.innerHTML = EventElement({
-        ...CalSyncApi.getDateParts(event.startTime.seconds),
-        title: event.title,
-      });
-      eventEl.classList.add("list-row");
-      eventEl.href = `/event.html?id=${event.id}`;
-      fragment.appendChild(eventEl);
-    }
-    resultsContainerEl.replaceChildren(fragment);
+    classNames: {
+      list: "list bg-base-100 rounded-box shadow-md text-white",
+      panel: "bg-base-200",
+      root: "bg-base-200",
+      detachedContainer: "bg-base-200",
+      input: "bg-base-200 !text-white !ps-3",
+      form: "bg-base-200",
+      detachedOverlay: "bg-base-200",
+      detachedSearchButton: "!bg-base-200",
+      inputWrapper: "bg-base-300 text-white",
+      detachedSearchButtonIcon: "bg-base-200",
+      detachedFormContainer: "bg-base-200",
+      source: "bg-base-200",
+      sourceNoResults: "bg-base-200",
+      panelLayout: "bg-base-200",
+      submitButton: "!bg-base-200",
+      clearButton: "!bg-base-100 !text-white",
+      detachedCancelButton: "!bg-base-100 !text-white",
+    },
+    getSources() {
+      return [
+        {
+          sourceId: "events",
+          getItems({ query }) {
+            return filterEvents(query);
+            // return [
+            //   { label: "Twitter", url: "https://twitter.com" },
+            //   { label: "GitHub", url: "https://github.com" },
+            // ].filter(({ label }) =>
+            //   label.toLowerCase().includes(query.toLowerCase()),
+            // );
+          },
+          getItemUrl({ item }) {
+            return `/event.html?id=${item.id}`;
+          },
+          templates: {
+            item({ item: event, html }) {
+              const { startTime, id, title, description, duration, user } =
+                event;
+              const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
+                startTime.seconds,
+              );
+              return html`
+                <a href="/event.html?id=${id}" class="list-row">
+                  <div
+                    class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12"
+                  >
+                    <div class="">${date.getDate()}</div>
+                    <div class="text-sm text-primary">
+                      ${date.toString().split(" ")[1]}
+                    </div>
+                  </div>
+                  <div class="list-col-grow gap-2 flex flex-col pt-2">
+                    <div>${title}</div>
+                    <div class="text-xs uppercase font-semibold opacity-60">
+                      ${hours}:${minutes} ${amPm}
+                    </div>
+                  </div>
+                  <button class="btn btn-square btn-ghost">
+                    <svg
+                      class="size-[1.2em]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="2"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M6 3L20 12 6 21 6 3z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                </a>
+              `;
+            },
+          },
+          // ...
+        },
+      ];
+    },
+    debug: true,
   });
 }
 
 async function initSearchPage() {
   loadAllEvents();
-  addSearchListener();
+  //addSearchListener();
+  enableAutocomplete();
 }
 
 safeOnLoad(initSearchPage);

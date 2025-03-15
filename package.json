@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.18.1",
+    "@algolia/autocomplete-theme-classic": "^1.18.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "cally": "^0.8.0",

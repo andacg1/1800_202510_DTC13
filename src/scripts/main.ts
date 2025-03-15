@@ -1,5 +1,6 @@
+import { EventData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
-import { EventElement } from "./components.ts";
+import { createHtmlElement, EventElement } from "./components.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { toShortISO } from "./lib/temporal.ts";
 import store, { AppStoreState } from "./store.ts";
@@ -35,7 +36,7 @@ function handleDateChange(event: Event) {
     );
 
   const container = document.getElementById("main-event-list");
-  const rows = events.map((event) => buildEventElement(event as UserEventData));
+  const rows = events.map((event) => EventElement(event as WithId<EventData>));
   container?.replaceChildren(...rows);
 }
 
@@ -52,23 +53,6 @@ function highlightEvents() {
 }
 
 // {"duration":60,"startTime":{"seconds":1744171440,"nanoseconds":0},"description":"demo","title":"Test event"}
-const buildEventElement = ({
-  description,
-  duration,
-  startTime,
-  title,
-  id,
-}: UserEventData) => {
-  const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
-    startTime.seconds,
-  );
-
-  const rowEl = document.createElement("a");
-  rowEl.classList.add("list-row");
-  rowEl.href = `/event.html?id=${id}`;
-  rowEl.innerHTML = EventElement({ amPm, date, hours, minutes, title });
-  return rowEl;
-};
 
 async function insertUserEvents() {
   const events = await CalSyncApi.getUserEvents();
@@ -85,11 +69,11 @@ async function insertUserEvents() {
         toShortISO(CalSyncApi.getDateParts(event.startTime.seconds).date) ===
         todayString,
     )
-    .map((event) => buildEventElement(event as UserEventData));
+    .map((event) => EventElement(event as WithId<EventData>));
   container?.replaceChildren(...rows);
 }
 
-function handleStoreUpdate(state: AppStoreState) {
+function handleStoreUpdate(_state: AppStoreState) {
   highlightEvents();
 }
 
