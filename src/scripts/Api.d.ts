@@ -19,6 +19,7 @@ export type EventData = {
   startTime: StartTime;
   description: string;
   user: DocumentReference;
+  tag: DocumentReference;
 };
 
 export type DateParts = {
@@ -38,3 +39,5 @@ export type FaqData = {
   title: string;
   description: string;
 };
+
+export type DocumentReference = DocumentReference;

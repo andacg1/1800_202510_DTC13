@@ -1,21 +1,51 @@
-import { EventData, WithId } from "./Api";
+import { createTagsPlugin, Tag } from "@algolia/autocomplete-plugin-tags";
+import { EventData, TagData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
+import { addTags } from "./data/addTags.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store from "./store.ts";
-import { autocomplete } from "@algolia/autocomplete-js";
+import { autocomplete, AutocompleteOptions } from "@algolia/autocomplete-js";
 
 import "@algolia/autocomplete-theme-classic";
+import "@algolia/autocomplete-plugin-tags/dist/theme.min.css";
 
 //let events: Awaited<ReturnType<typeof CalSyncApi.getUserEvents>> = [];
+
+const tagsPlugin = createTagsPlugin<WithId<TagData>>({
+  getTagsSubscribers() {
+    return [
+      {
+        sourceId: "events",
+        getTag({ item }) {
+          return {
+            ...item,
+            label: item.name,
+          };
+        },
+      },
+    ];
+  },
+  transformSource() {
+    return undefined;
+  },
+});
 
 async function loadAllEvents() {
   store.getState().setFilteredEvents(await CalSyncApi.getUserEvents());
 }
 
-const filterEvents = (query: string) =>
-  store
+const filterEvents = (query: string) => {
+  const filterTag = store.getState().currentTag;
+  return store
     .getState()
-    .filteredEvents.filter((event) =>
+    .filteredEvents.filter((event) => {
+      if (!filterTag) {
+        return true;
+      }
+
+      return event?.tag?.id === filterTag.id;
+    })
+    .filter((event) =>
       (event.description + " " + event.title)
         .toLowerCase()
         .includes(query.toLowerCase()),
@@ -28,12 +58,17 @@ const filterEvents = (query: string) =>
         Math.abs(now - b.startTime.seconds)
       );
     });
+};
 
-function enableAutocomplete() {
+function enableAutocomplete(
+  options: Partial<AutocompleteOptions<WithId<EventData>>>,
+) {
   autocomplete<WithId<EventData>>({
     container: "#autocomplete",
     openOnFocus: true,
-    plugins: [],
+    detachedMediaQuery: "none",
+    debug: false,
+    panelContainer: "#search-results-container",
 
     classNames: {
       list: "list bg-base-100 rounded-box shadow-md text-white",
@@ -60,12 +95,6 @@ function enableAutocomplete() {
           sourceId: "events",
           getItems({ query }) {
             return filterEvents(query);
-            // return [
-            //   { label: "Twitter", url: "https://twitter.com" },
-            //   { label: "GitHub", url: "https://github.com" },
-            // ].filter(({ label }) =>
-            //   label.toLowerCase().includes(query.toLowerCase()),
-            // );
           },
           getItemUrl({ item }) {
             return `/event.html?id=${item.id}`;
@@ -118,14 +147,53 @@ function enableAutocomplete() {
         },
       ];
     },
-    debug: true,
+
+    ...options,
+  });
+}
+
+function injectTags(tags: WithId<TagData>[]) {
+  const tagForm = document.getElementById("filter-form") as HTMLFormElement;
+  const container = document.createDocumentFragment();
+  for (const tag of tags) {
+    const input = document.createElement("input");
+    Object.assign(input, {
+      className: "btn",
+      type: "radio",
+      name: "tags",
+      ariaLabel: tag.name,
+      value: tag.id,
+    });
+    container.appendChild(input);
+  }
+  tagForm.append(container);
+}
+
+function addTagListener() {
+  const tagForm = document.getElementById("filter-form") as HTMLFormElement;
+  tagForm.addEventListener("change", (e) => {
+    console.log(e);
+    const targetTagId = (e.target as HTMLInputElement).value;
+    const allTags = store.getState().tags;
+    const newTag = allTags.find((tag) => tag.id == targetTagId);
+    if (!newTag) {
+      console.error(`Couldn't find tag with name: ${newTag}`);
+      return;
+    }
+    store.getState().setCurrentTag(newTag);
+  });
+  tagForm.addEventListener("reset", (e) => {
+    store.getState().setCurrentTag(null);
   });
 }
 
 async function initSearchPage() {
-  loadAllEvents();
-  //addSearchListener();
-  enableAutocomplete();
+  await loadAllEvents();
+  const tags = await CalSyncApi.getAllTags();
+  injectTags(tags);
+  addTagListener();
+  //await addTags();
+  enableAutocomplete({ plugins: [tagsPlugin] });
 }
 
 safeOnLoad(initSearchPage);

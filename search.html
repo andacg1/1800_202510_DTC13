@@ -32,38 +32,16 @@
       id="main-content"
       class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
     >
-      <div id="autocomplete" class="w-full px-4 rounded-lg"></div>
+      <div id="autocomplete" class="w-full px-4 rounded-lg">
+        <form class="filter justify-center p-2" id="filter-form">
+          <input class="btn btn-square" type="reset" value="×" />
+        </form>
+      </div>
 
-      <!--      <label class="input">-->
-      <!--        <svg-->
-      <!--          class="h-[1em] opacity-50"-->
-      <!--          xmlns="http://www.w3.org/2000/svg"-->
-      <!--          viewBox="0 0 24 24"-->
-      <!--        >-->
-      <!--          <g-->
-      <!--            stroke-linejoin="round"-->
-      <!--            stroke-linecap="round"-->
-      <!--            stroke-width="2.5"-->
-      <!--            fill="none"-->
-      <!--            stroke="currentColor"-->
-      <!--          >-->
-      <!--            <circle cx="11" cy="11" r="8"></circle>-->
-      <!--            <path d="m21 21-4.3-4.3"></path>-->
-      <!--          </g>-->
-      <!--        </svg>-->
-      <!--        <input-->
-      <!--          type="search"-->
-      <!--          class="grow"-->
-      <!--          placeholder="Search"-->
-      <!--          id="event-search-input"-->
-      <!--        />-->
-      <!--      </label>-->
       <ul
         class="list bg-base-100 rounded-box shadow-md"
         id="search-results-container"
-      >
-        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">My events</li>
-      </ul>
+      ></ul>
     </main>
     <div id="fake-dock"></div>
     <nav id="bottom-navbar"></nav>

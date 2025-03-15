@@ -21,6 +21,7 @@ import {
   TagData,
   TagName,
   UserData,
+  DocumentReference,
   WithId,
 } from "./Api";
 import { getUserRef } from "./lib/auth.ts";
@@ -60,16 +61,32 @@ export class CalSyncApi {
     collectionPath: string,
   ) => collection(this.db, collectionPath).withConverter(this.converter<T>());
   static userConverter = this.converter<UserData>();
-  static tagConverter = this.converter<TagData>();
+  static tagConverter = {
+    toFirestore: (data: WithId<TagData>) => data,
+    fromFirestore: (snap: QueryDocumentSnapshot) => {
+      const data = snap.data() as WithId<TagData>;
+      console.log({ data });
+      return {
+        ...data,
+        id: snap.id,
+      } as WithId<TagData>;
+    },
+  };
+
   static faqConverter = this.converter<FaqData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
       const data = snap.data() as EventData;
+      console.log({ data });
       return {
         ...data,
         id: snap.id,
         startTimeParts: this.getDateParts(data.startTime.seconds),
+        tag: {
+          ...data.tag,
+          id: data.tag.id,
+        },
       } as CustomEventData;
     },
   };
@@ -152,7 +169,7 @@ export class CalSyncApi {
       where("user", "==", await getUserRef()),
     ).withConverter(CalSyncApi.eventConverter);
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q.withConverter(this.eventConverter));
     return querySnapshot.docs.map((doc) =>
       CalSyncApi.eventConverter.fromFirestore(doc),
     );
@@ -196,14 +213,14 @@ export class CalSyncApi {
   }
 
   static async getAllTags() {
-    const q = query(this.collection<EventData>("tags")).withConverter(
-      CalSyncApi.tagConverter,
-    );
+    const q = query(this.collection<EventData>("tags"));
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) =>
+    const tags = querySnapshot.docs.map((doc) =>
       CalSyncApi.tagConverter.fromFirestore(doc),
     );
+    store.getState().setTags(tags);
+    return tags;
   }
 
   static async getAllFaqs() {

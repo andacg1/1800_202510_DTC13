@@ -2,6 +2,7 @@ import type { Auth } from "firebase/auth";
 import type { Firestore } from "firebase/firestore";
 import { createStore } from "zustand/vanilla";
 import { devtools } from "zustand/middleware";
+import { TagData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 
 export type ShortISODate = `${number}-${number}-${number}`;
@@ -20,6 +21,8 @@ export type AppStoreState = {
   db: Firestore;
   auth: Auth;
   filteredEvents: Awaited<ReturnType<typeof CalSyncApi.getUserEvents>>;
+  tags: Awaited<ReturnType<typeof CalSyncApi.getAllTags>>
+  currentTag: WithId<TagData> | null
 };
 
 type AppStoreActions = {
@@ -27,6 +30,8 @@ type AppStoreActions = {
   setFilteredEvents: (
     newFilteredEvents: AppStoreState["filteredEvents"],
   ) => void;
+  setTags: (tags: AppStoreState['tags']) => void
+  setCurrentTag: (tags: AppStoreState['currentTag']) => void
 };
 
 type AppStore = AppStoreState & AppStoreActions;
@@ -49,6 +54,15 @@ const store = createStore<AppStore>()(
         filteredEvents: [...filteredEvents],
       })),
     filteredEvents: [],
+    tags: [],
+    setTags: (tags: AppStoreState["tags"]) =>
+      set((state) => ({
+        tags: [...tags],
+      })),
+    setCurrentTag: (currentTag: AppStoreState["currentTag"]) =>
+      set((state) => ({
+        currentTag: currentTag,
+      })),
     userId: "",
     db: null,
   })),
