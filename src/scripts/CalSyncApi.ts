@@ -65,7 +65,6 @@ export class CalSyncApi {
     toFirestore: (data: WithId<TagData>) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
       const data = snap.data() as WithId<TagData>;
-      console.log({ data });
       return {
         ...data,
         id: snap.id,
@@ -83,10 +82,12 @@ export class CalSyncApi {
         ...data,
         id: snap.id,
         startTimeParts: this.getDateParts(data.startTime.seconds),
-        tag: {
-          ...data.tag,
-          id: data.tag.id,
-        },
+        tag: data?.tag
+          ? {
+              ...data.tag,
+              id: data.tag.id,
+            }
+          : null,
       } as CustomEventData;
     },
   };
@@ -122,12 +123,14 @@ export class CalSyncApi {
     duration = 60,
     startDate,
     startTime,
+    tagName,
   }: {
     title: string | undefined;
     description: string | undefined;
     duration: number | undefined;
     startDate: ShortISODate;
     startTime: Time;
+    tagName: string | null;
   }) {
     const [year, month, day] = getDateParts(startDate);
     const [hours, minutes] = getTimeParts(startTime);
@@ -135,6 +138,20 @@ export class CalSyncApi {
 
     const newEventRef = doc(collection(this.db, "events"));
     const userRef = await getUserRef();
+    let tagRef = null;
+    const allTags = store.getState().tags;
+
+    if (tagName) {
+      const matchingTag = allTags.find((tag) => tag.name === tagName);
+      if (matchingTag) {
+        tagRef = doc(this.db, "tags", matchingTag.id);
+      } else {
+        tagRef = doc(collection(this.db, "tags"));
+        await setDoc(tagRef, {
+          name: tagName,
+        });
+      }
+    }
 
     try {
       await setDoc(newEventRef, {
@@ -143,13 +160,15 @@ export class CalSyncApi {
         duration,
         startTime: eventDate,
         user: userRef,
+        tag: tagRef,
       });
 
-      toast("Event successfully updated.", "success");
+      toast("Event successfully created.", "success");
       setTimeout(() => {
         window.location.assign("/main.html");
       }, 500);
     } catch (e) {
+      console.error(e);
       toast("Event creation failed.", "error");
     }
   }

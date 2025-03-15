@@ -105,6 +105,25 @@
                   form="create-event-form"
                 ></textarea>
               </fieldset>
+
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">Tag</legend>
+
+                <input
+                  list="existing-tags"
+                  placeholder="Start typing..."
+                  type="text"
+                  class="input"
+                  name="event-tag"
+                  form="create-event-form"
+                />
+                <datalist id="existing-tags"> </datalist>
+
+                <form class="filter justify-center p-2" id="filter-form">
+                  <input class="btn btn-square" type="reset" value="×" />
+                </form>
+              </fieldset>
+
               <button
                 class="btn btn-success mt-4"
                 form="create-event-form"

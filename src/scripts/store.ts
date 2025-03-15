@@ -13,6 +13,7 @@ type DraftEvent = {
   duration?: number;
   startDate?: ShortISODate;
   startTime?: Time;
+  tagName?: string | null;
 };
 
 export type AppStoreState = {
@@ -21,8 +22,8 @@ export type AppStoreState = {
   db: Firestore;
   auth: Auth;
   filteredEvents: Awaited<ReturnType<typeof CalSyncApi.getUserEvents>>;
-  tags: Awaited<ReturnType<typeof CalSyncApi.getAllTags>>
-  currentTag: WithId<TagData> | null
+  tags: Awaited<ReturnType<typeof CalSyncApi.getAllTags>>;
+  currentTag: WithId<TagData> | null;
 };
 
 type AppStoreActions = {
@@ -30,8 +31,8 @@ type AppStoreActions = {
   setFilteredEvents: (
     newFilteredEvents: AppStoreState["filteredEvents"],
   ) => void;
-  setTags: (tags: AppStoreState['tags']) => void
-  setCurrentTag: (tags: AppStoreState['currentTag']) => void
+  setTags: (tags: AppStoreState["tags"]) => void;
+  setCurrentTag: (tags: AppStoreState["currentTag"]) => void;
 };
 
 type AppStore = AppStoreState & AppStoreActions;
@@ -44,6 +45,7 @@ const store = createStore<AppStore>()(
       startDate: new Date().toISOString().substring(0, 10) as ShortISODate,
       startTime: new Date().toISOString().substring(11, 16) as Time,
       duration: 60,
+      tagName: null,
     } satisfies Required<DraftEvent>,
     setDraftEvent: (draftEvent: DraftEvent) =>
       set((state) => ({

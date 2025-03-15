@@ -1,3 +1,4 @@
+import { TagData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store, { AppStoreState, ShortISODate, Time } from "./store.ts";
@@ -27,7 +28,6 @@ function addCalendarListener() {
       store
         .getState()
         .setDraftEvent({ startDate: target.value as ShortISODate });
-      // store.getState().setDraftEvent({ startTime: eventStartTime });
     });
   }
 }
@@ -64,11 +64,22 @@ function addEventDescriptionListener(formElement: HTMLFormElement) {
   });
 }
 
+function addTagListener(formElement: HTMLFormElement) {
+  const eventTagInput: HTMLInputElement = formElement["event-tag"];
+
+  eventTagInput.addEventListener("change", (e) => {
+    store
+      .getState()
+      .setDraftEvent({ tagName: (e.target as HTMLInputElement)?.value });
+  });
+}
+
 function addSubmitListener(formElement: HTMLFormElement) {
   formElement.addEventListener("submit", async (e) => {
     e.preventDefault();
     const { draftEvent } = store.getState();
-    const { startDate, startTime, title, description, duration } = draftEvent;
+    const { startDate, startTime, title, description, duration, tagName } =
+      draftEvent;
 
     if (!startTime || !startDate) {
       console.error("Date and time required");
@@ -82,6 +93,7 @@ function addSubmitListener(formElement: HTMLFormElement) {
       duration,
       startDate,
       startTime,
+      tagName: tagName || null,
     });
   });
 }
@@ -100,6 +112,7 @@ function setupCalendarListeners() {
   addEventDescriptionListener(formElement);
   addEventTimeListener(formElement);
   addEventTitleListener(formElement);
+  addTagListener(formElement);
 }
 
 function syncStep() {
@@ -146,6 +159,7 @@ function updateInputs(state: AppStoreState) {
   const eventDescriptionInput: HTMLInputElement =
     formElement["event-description"];
   const eventTitleInput: HTMLInputElement = formElement["event-title"];
+  const eventTagInput: HTMLInputElement = formElement["event-tag"];
   const eventTimeInput: HTMLInputElement = formElement["event-time"];
   const calendar = document.getElementById(
     "create-event-calendar",
@@ -154,16 +168,34 @@ function updateInputs(state: AppStoreState) {
   eventDescriptionInput.value = state.draftEvent.description || "";
   eventTitleInput.value = state.draftEvent.title || "";
   eventTimeInput.value = state.draftEvent.startTime || "";
+  eventTagInput.value = state.draftEvent.tagName || "";
   calendar.value = state.draftEvent.startDate || "";
+}
+
+function updateExistingTags(tags: WithId<TagData>[]) {
+  const existingTagsDatalist: HTMLDataListElement = document.getElementById(
+    "existing-tags",
+  ) as HTMLDataListElement;
+  existingTagsDatalist.replaceChildren(
+    ...tags.map((tag) => {
+      const option = document.createElement("option");
+      option.innerText = tag.name;
+      option.value = tag.name;
+      return option;
+    }),
+  );
 }
 
 function setupTagInput() {}
 
-function initCreatePage() {
+async function initCreatePage() {
   setupHashListener();
   syncStep();
   setupCalendarListeners();
+  const tags = await CalSyncApi.getAllTags();
+  updateExistingTags(tags);
   setupTagInput();
+
   store.subscribe(updateInputs);
 }
 
