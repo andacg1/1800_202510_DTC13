@@ -1,10 +1,6 @@
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store, { AppStoreState, ShortISODate, Time } from "./store.ts";
-import {
-  type MultipleSelectInstance,
-  multipleSelect,
-} from "multiple-select-vanilla";
 
 function setupHashListener() {
   addEventListener("hashchange", (e) => {

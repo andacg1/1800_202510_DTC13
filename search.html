@@ -47,10 +47,19 @@
             <path d="m21 21-4.3-4.3"></path>
           </g>
         </svg>
-        <input type="search" class="grow" placeholder="Search" id="event-search-input" />
-        <!--        <kbd class="kbd kbd-sm">⌘</kbd>-->
-        <!--        <kbd class="kbd kbd-sm">K</kbd>-->
+        <input
+          type="search"
+          class="grow"
+          placeholder="Search"
+          id="event-search-input"
+        />
       </label>
+      <ul
+        class="list bg-base-100 rounded-box shadow-md"
+        id="search-results-container"
+      >
+        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">My events</li>
+      </ul>
     </main>
     <div id="fake-dock"></div>
     <nav id="bottom-navbar"></nav>

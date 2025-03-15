@@ -1,21 +1,42 @@
-import { getDoc, query, where, collection, getDocs } from "firebase/firestore";
 import { CalSyncApi } from "./CalSyncApi.ts";
+import { EventElement } from "./components.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { toShortISO } from "./lib/temporal.ts";
-import store from "./store.ts";
-import { getUserRef } from "./lib/auth.ts";
+import store, { AppStoreState } from "./store.ts";
 
-type CalendarElement = Element & { getDayParts?: (date: Date) => string };
-
-const testEventDates = new Set(["2025-03-23", "2025-03-20"]);
+type CalendarElement = HTMLInputElement & {
+  getDayParts?: (date: Date) => string;
+  change?: (event: Event) => void;
+};
 
 function getDayParts(date: Date): string {
   const isoDate = toShortISO(date);
-  // console.log(isoDate);
-  if (testEventDates.has(isoDate)) {
+  const eventDates = new Set(
+    store.getState().filteredEvents.map((event) => {
+      const { date } = CalSyncApi.getDateParts(event.startTime.seconds);
+      return toShortISO(date);
+    }),
+  );
+  if (eventDates.has(isoDate)) {
     return "event";
   }
   return "";
+}
+
+function handleDateChange(event: Event) {
+  const dateString = (event.target as HTMLInputElement).value;
+  console.log((event.target as HTMLInputElement).value);
+  const events = store
+    .getState()
+    .filteredEvents.filter(
+      (event) =>
+        toShortISO(CalSyncApi.getDateParts(event.startTime.seconds).date) ===
+        dateString,
+    );
+
+  const container = document.getElementById("main-event-list");
+  const rows = events.map((event) => buildEventElement(event as UserEventData));
+  container?.replaceChildren(...rows);
 }
 
 function highlightEvents() {
@@ -27,6 +48,7 @@ function highlightEvents() {
   }
   console.log(calendar);
   calendar!.getDayParts = getDayParts;
+  calendar.addEventListener("change", handleDateChange);
 }
 
 // {"duration":60,"startTime":{"seconds":1744171440,"nanoseconds":0},"description":"demo","title":"Test event"}
@@ -37,10 +59,6 @@ const buildEventElement = ({
   title,
   id,
 }: UserEventData) => {
-  // TODO: add nanoseconds
-  // const date = new Date(startTime.seconds * 1000);
-  // const [_dateISO, timeISO, period] = date.toLocaleString("en-US").split(" ");
-  // const [hours, minutes] = timeISO.split(":");
   const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
     startTime.seconds,
   );
@@ -48,49 +66,37 @@ const buildEventElement = ({
   const rowEl = document.createElement("a");
   rowEl.classList.add("list-row");
   rowEl.href = `/event.html?id=${id}`;
-  rowEl.innerHTML = `
-            <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
-            <div class="">${date.getDate()}</div>
-            <div class="text-sm text-primary">${date.toString().split(" ")[1]}</div>
-            </div>
-            <div class="list-col-grow gap-2 flex flex-col pt-2">
-              <div>${title}</div>
-              <div class="text-xs uppercase font-semibold opacity-60">
-                ${hours}:${minutes} ${amPm}
-              </div>
-            </div>
-            <button class="btn btn-square btn-ghost">
-              <svg
-                class="size-[1.2em]"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 3L20 12 6 21 6 3z"></path>
-                </g>
-              </svg>
-            </button>
-  `;
+  rowEl.innerHTML = EventElement({ amPm, date, hours, minutes, title });
   return rowEl;
 };
 
 async function insertUserEvents() {
   const events = await CalSyncApi.getUserEvents();
-  console.log(events);
+  store.getState().setFilteredEvents(events);
+  const calendar: CalendarElement | null = document.querySelector(
+    "#my-events-calendar",
+  );
+
+  const todayString = toShortISO(new Date());
   const container = document.getElementById("main-event-list");
-  const rows = events.map((event) => buildEventElement(event as UserEventData));
+  const rows = events
+    .filter(
+      (event) =>
+        toShortISO(CalSyncApi.getDateParts(event.startTime.seconds).date) ===
+        todayString,
+    )
+    .map((event) => buildEventElement(event as UserEventData));
   container?.replaceChildren(...rows);
 }
 
-function initMainPage() {
+function handleStoreUpdate(state: AppStoreState) {
   highlightEvents();
-  insertUserEvents();
+}
+
+async function initMainPage() {
+  await insertUserEvents();
+  store.subscribe(handleStoreUpdate);
+  highlightEvents();
 }
 
 safeOnLoad(initMainPage);

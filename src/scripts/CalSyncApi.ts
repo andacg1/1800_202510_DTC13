@@ -24,6 +24,7 @@ import {
   WithId,
 } from "./Api";
 import { getUserRef } from "./lib/auth.ts";
+import { getDateParts, getTimeParts } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
 
@@ -75,8 +76,12 @@ export class CalSyncApi {
 
   static getDateParts(seconds: number) {
     const date = new Date(seconds * 1000);
-    const [dateISO, timeISO, amPm] = date.toLocaleString("en-US").split(" ");
+    const [dateISO, timeISO, amPm] = date
+      .toLocaleString("en-US")
+      .replace(",", "")
+      .split(" ");
     const [hours, minutes] = timeISO.split(":");
+
     return {
       date,
       dateISO,
@@ -84,6 +89,13 @@ export class CalSyncApi {
       amPm,
       hours,
       minutes,
+    } as {
+      date: Date;
+      dateISO: string;
+      timeISO: string;
+      amPm: "am" | "pm";
+      hours: string;
+      minutes: string;
     };
   }
 
@@ -100,8 +112,8 @@ export class CalSyncApi {
     startDate: ShortISODate;
     startTime: Time;
   }) {
-    const [year, month, day] = startDate.split("-").map((s) => Number(s));
-    const [hours, minutes] = startTime.split(":").map((s) => Number(s));
+    const [year, month, day] = getDateParts(startDate);
+    const [hours, minutes] = getTimeParts(startTime);
     const eventDate = new Date(year, month - 1, day, hours, minutes);
 
     const newEventRef = doc(collection(this.db, "events"));
