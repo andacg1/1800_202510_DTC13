@@ -77,7 +77,6 @@ export class CalSyncApi {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
       const data = snap.data() as EventData;
-      console.log({ data });
       return {
         ...data,
         id: snap.id,
