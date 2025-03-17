@@ -28,6 +28,7 @@ import { getUserRef } from "./lib/auth.ts";
 import { getDateParts, getTimeParts } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
+import { deleteDoc } from "firebase/firestore";
 
 export class CalSyncApi {
   static #store: CalSyncStore;
@@ -35,6 +36,19 @@ export class CalSyncApi {
   static auth: Auth;
   private constructor() {
     throw new Error("CalSyncApi is a static class");
+  }
+
+  static async deleteEvent(eventId: string): Promise<void> {
+  try {
+    const eventRef = doc(this.db, "events", eventId);
+    await deleteDoc(eventRef);
+    toast("Event deleted successfully.", "success");
+    setTimeout(() => {
+      window.location.assign("/main.html");
+    }, 500);
+    } catch (e) {
+      toast("Event deletion failed.", "error");
+    }
   }
 
   static {

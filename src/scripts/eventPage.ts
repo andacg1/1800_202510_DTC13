@@ -100,6 +100,12 @@ async function initEventPage() {
   const event = await fetchEventData();
   updateEventPage(event);
   scheduleCountdownUpdate(event);
+  const deleteButton = document.getElementById("delete-event-button") as HTMLButtonElement;
+  deleteButton.addEventListener("click", async () => {
+    if (confirm("Are you sure you want to delete this event?")) {
+      await CalSyncApi.deleteEvent(event.id);
+    }
+  });
 }
 
 safeOnLoad(initEventPage);
