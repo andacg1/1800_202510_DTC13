@@ -20,6 +20,7 @@ export type EventData = {
   description: string;
   user: DocumentReference;
   tag: DocumentReference;
+  isPublic: boolean;
 };
 
 export type DateParts = {

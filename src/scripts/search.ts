@@ -34,14 +34,26 @@ async function loadAllEvents() {
   store.getState().setFilteredEvents(await CalSyncApi.getUserEvents());
 }
 
+function focusAutocomplete() {
+  const autocomplete = document.getElementById(
+    "autocomplete-0-input",
+  ) as HTMLInputElement;
+  if (!autocomplete) {
+    console.warn("Could not find autocomplete");
+  }
+  autocomplete?.focus();
+}
+
 const filterEvents = (query: string) => {
   const filterTag = store.getState().currentTag;
-  const isPublic = document.querySelector(".toggle").checked; // Get toggle state
+  const isPublicCheckbox: HTMLInputElement | null = document.querySelector(
+    "[name='is-public-filter']",
+  );
+  const isPublic = isPublicCheckbox?.checked; // Get toggle state
 
   return store
     .getState()
-    .filteredEvents
-    .filter((event) => event.isPublic === isPublic) // Filter by public/private
+    .filteredEvents.filter((event) => event.isPublic === isPublic) // Filter by public/private
     .filter((event) => {
       if (!filterTag) return true;
       return event?.tag?.id === filterTag.id;
@@ -60,7 +72,6 @@ const filterEvents = (query: string) => {
       );
     });
 };
-
 
 function enableAutocomplete(
   options: Partial<AutocompleteOptions<WithId<EventData>>>,
@@ -160,7 +171,7 @@ function injectTags(tags: WithId<TagData>[]) {
   for (const tag of tags) {
     const input = document.createElement("input");
     Object.assign(input, {
-      className: "btn",
+      className: "btn text-xs",
       type: "radio",
       name: "tags",
       ariaLabel: tag.name,
@@ -171,19 +182,33 @@ function injectTags(tags: WithId<TagData>[]) {
   tagForm.append(container);
 }
 
+function toggleLabel() {
+  focusAutocomplete();
+  const label = document.getElementById("toggle-label");
+  if (!label) {
+    return;
+  }
+  const target = label.parentElement?.querySelector("input");
+  label.textContent = target?.checked ? "Public Events" : "My Events";
+}
+
+function addIsPublicListener() {
+  const isPublicInput = document.querySelector(
+    "[name='is-public-filter']",
+  ) as HTMLInputElement;
+  isPublicInput.addEventListener("change", (e) => {
+    console.log(e);
+    toggleLabel(e);
+  });
+}
+
 function addTagListener() {
   const tagForm = document.getElementById("filter-form") as HTMLFormElement;
   tagForm.addEventListener("change", (e) => {
     console.log(e);
     const targetTagId = (e.target as HTMLInputElement).value;
     const allTags = store.getState().tags;
-    const autocomplete = document.getElementById(
-      "autocomplete-0-input",
-    ) as HTMLInputElement;
-    if (!autocomplete) {
-      console.warn("Could not find autocomplete");
-    }
-    autocomplete?.focus();
+    focusAutocomplete();
 
     const newTag = allTags.find((tag) => tag.id == targetTagId);
     if (!newTag) {
@@ -202,8 +227,10 @@ async function initSearchPage() {
   const tags = await CalSyncApi.getAllTags();
   injectTags(tags);
   addTagListener();
+  addIsPublicListener();
   //await addTags();
   enableAutocomplete({ plugins: [tagsPlugin] });
+  toggleLabel();
 }
 
 safeOnLoad(initSearchPage);
