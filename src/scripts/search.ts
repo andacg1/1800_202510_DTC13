@@ -175,6 +175,14 @@ function addTagListener() {
     console.log(e);
     const targetTagId = (e.target as HTMLInputElement).value;
     const allTags = store.getState().tags;
+    const autocomplete = document.getElementById(
+      "autocomplete-0-input",
+    ) as HTMLInputElement;
+    if (!autocomplete) {
+      console.warn("Could not find autocomplete");
+    }
+    autocomplete?.focus();
+
     const newTag = allTags.find((tag) => tag.id == targetTagId);
     if (!newTag) {
       console.error(`Couldn't find tag with name: ${newTag}`);
