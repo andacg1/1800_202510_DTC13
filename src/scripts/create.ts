@@ -64,6 +64,15 @@ function addEventDescriptionListener(formElement: HTMLFormElement) {
   });
 }
 
+function addEventIsPublicListener(formElement: HTMLFormElement) {
+  const eventIsPublicInput: HTMLInputElement = formElement["event-is-public"];
+  eventIsPublicInput.addEventListener("change", (e) => {
+    store
+      .getState()
+      .setDraftEvent({ isPublic: (e.target as HTMLInputElement)?.checked });
+  });
+}
+
 function addTagListener(formElement: HTMLFormElement) {
   const eventTagInput: HTMLInputElement = formElement["event-tag"];
 
@@ -78,8 +87,15 @@ function addSubmitListener(formElement: HTMLFormElement) {
   formElement.addEventListener("submit", async (e) => {
     e.preventDefault();
     const { draftEvent } = store.getState();
-    const { startDate, startTime, title, description, duration, tagName } =
-      draftEvent;
+    const {
+      startDate,
+      startTime,
+      title,
+      description,
+      duration,
+      tagName,
+      isPublic = false,
+    } = draftEvent;
 
     if (!startTime || !startDate) {
       console.error("Date and time required");
@@ -94,6 +110,7 @@ function addSubmitListener(formElement: HTMLFormElement) {
       startDate,
       startTime,
       tagName: tagName || null,
+      isPublic,
     });
   });
 }
@@ -113,6 +130,7 @@ function setupCalendarListeners() {
   addEventTimeListener(formElement);
   addEventTitleListener(formElement);
   addTagListener(formElement);
+  addEventIsPublicListener(formElement);
 }
 
 function syncStep() {
@@ -161,6 +179,7 @@ function updateInputs(state: AppStoreState) {
   const eventTitleInput: HTMLInputElement = formElement["event-title"];
   const eventTagInput: HTMLInputElement = formElement["event-tag"];
   const eventTimeInput: HTMLInputElement = formElement["event-time"];
+  const eventIsPublicInput: HTMLInputElement = formElement["event-is-public"];
   const calendar = document.getElementById(
     "create-event-calendar",
   ) as HTMLInputElement;
@@ -170,6 +189,7 @@ function updateInputs(state: AppStoreState) {
   eventTimeInput.value = state.draftEvent.startTime || "";
   eventTagInput.value = state.draftEvent.tagName || "";
   calendar.value = state.draftEvent.startDate || "";
+  eventIsPublicInput.checked = state.draftEvent.isPublic || false;
 }
 
 function updateExistingTags(tags: WithId<TagData>[]) {

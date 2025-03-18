@@ -119,13 +119,25 @@
                 />
                 <datalist id="existing-tags"> </datalist>
 
-                <form class="filter justify-center p-2" id="filter-form">
+                <form class="filter justify-center hidden" id="filter-form">
                   <input class="btn btn-square" type="reset" value="×" />
                 </form>
               </fieldset>
 
+              <fieldset class="fieldset items-end">
+                <legend class="fieldset-legend">Is Public</legend>
+
+                <input
+                  type="checkbox"
+                  checked="checked"
+                  name="event-is-public"
+                  class="toggle toggle-primary"
+                  form="create-event-form"
+                />
+              </fieldset>
+
               <button
-                class="btn btn-success mt-4"
+                class="btn btn-success mt-8"
                 form="create-event-form"
                 name="create-event"
               >

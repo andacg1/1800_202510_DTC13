@@ -14,6 +14,7 @@ type DraftEvent = {
   startDate?: ShortISODate;
   startTime?: Time;
   tagName?: string | null;
+  isPublic?: boolean;
 };
 
 export type AppStoreState = {

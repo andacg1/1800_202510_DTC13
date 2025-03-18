@@ -24,6 +24,7 @@ import {
   DocumentReference,
   WithId,
 } from "./Api";
+import { EventElement } from "./components.ts";
 import { getUserRef } from "./lib/auth.ts";
 import { getDateParts, getTimeParts } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
@@ -39,53 +40,48 @@ export class CalSyncApi {
   }
 
   static async refreshEventList() {
-  console.log("Refreshing event list...");
-  const events = await this.getUserEvents();
-  const eventList = document.getElementById("main-event-list");
+    // TODO: Make this dependent on currently selected date
+    console.log("Refreshing event list...");
+    const events = await this.getUserEvents();
+    const eventList = document.getElementById("main-event-list");
 
-  if (!eventList) {
-    console.error("Event list element not found!");
-    return;
-  }
-
-  eventList.innerHTML = ""; // Clear previous events
-
-  events.forEach((event) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<a href="event.html?id=${event.id}">${event.title}</a>`; // Ensure ID is included
-    eventList.appendChild(li);
-  });
-
-  console.log("Event list updated.");
-}
-
-
- static async deleteEvent(eventId: string): Promise<void> {
-  try {
-    console.log(`Attempting to delete event with ID: ${eventId}`);
-
-    const eventRef = doc(this.db, "events", eventId);
-    await deleteDoc(eventRef);
-
-    console.log(`Event ${eventId} deleted successfully.`);
-    toast("Event deleted successfully.", "success");
-
-    // Refresh the event list after deletion
-    await this.refreshEventList();
-
-    // Redirect only if on event.html
-    if (window.location.pathname.includes("event.html")) {
-      setTimeout(() => {
-        window.location.href = "/main.html";
-      }, 500);
+    if (!eventList) {
+      console.error("Event list element not found!");
+      return;
     }
-  } catch (e) {
-    console.error("Error deleting event:", e);
-    toast("Event deletion failed.", "error");
-  }
+
+    const rows = events.map((event) =>
+      EventElement(event as WithId<EventData>),
+    );
+    eventList?.replaceChildren(...rows);
+
+    console.log("Event list updated.");
   }
 
+  static async deleteEvent(eventId: string): Promise<void> {
+    try {
+      console.log(`Attempting to delete event with ID: ${eventId}`);
 
+      const eventRef = doc(this.db, "events", eventId);
+      await deleteDoc(eventRef);
+
+      console.log(`Event ${eventId} deleted successfully.`);
+      toast("Event deleted successfully.", "success");
+
+      // Refresh the event list after deletion
+      await this.refreshEventList();
+
+      // Redirect only if on event.html
+      if (window.location.pathname.includes("event.html")) {
+        setTimeout(() => {
+          window.location.href = "/main.html";
+        }, 500);
+      }
+    } catch (e) {
+      console.error("Error deleting event:", e);
+      toast("Event deletion failed.", "error");
+    }
+  }
 
   static {
     this.#store = store;
@@ -173,6 +169,7 @@ export class CalSyncApi {
     startDate,
     startTime,
     tagName,
+    isPublic = false,
   }: {
     title: string | undefined;
     description: string | undefined;
@@ -180,6 +177,7 @@ export class CalSyncApi {
     startDate: ShortISODate;
     startTime: Time;
     tagName: string | null;
+    isPublic: boolean;
   }) {
     const [year, month, day] = getDateParts(startDate);
     const [hours, minutes] = getTimeParts(startTime);
@@ -210,6 +208,7 @@ export class CalSyncApi {
         startTime: eventDate,
         user: userRef,
         tag: tagRef,
+        isPublic,
       });
 
       toast("Event successfully created.", "success");
@@ -244,28 +243,25 @@ export class CalSyncApi {
   }
 
   static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
-  try {
-    console.log(`Fetching event with ID: ${eventId}`);
-    const eventRef = doc(this.db, "events", eventId).withConverter(
-      this.eventConverter
-    );
-    const eventSnapshot = await getDoc(eventRef);
+    try {
+      console.log(`Fetching event with ID: ${eventId}`);
+      const eventRef = doc(this.db, "events", eventId).withConverter(
+        this.eventConverter,
+      );
+      const eventSnapshot = await getDoc(eventRef);
 
-    if (!eventSnapshot.exists()) {
-      console.error(`Event not found: ${eventId}`);
+      if (!eventSnapshot.exists()) {
+        console.error(`Event not found: ${eventId}`);
+        return undefined;
+      }
+
+      console.log("Event fetched:", eventSnapshot.data());
+      return eventSnapshot.data();
+    } catch (error) {
+      console.error("Error fetching event:", error);
       return undefined;
     }
-
-    console.log("Event fetched:", eventSnapshot.data());
-    return eventSnapshot.data();
-  } catch (error) {
-    console.error("Error fetching event:", error);
-    return undefined;
   }
-}
-
-
-  static async findEvents(searchFor: string): Promise<WithId<EventData>[]> {}
 
   static async updateEvent(eventId: string, event: Partial<EventData>) {
     const eventRef = doc(this.db, "events", eventId).withConverter(
