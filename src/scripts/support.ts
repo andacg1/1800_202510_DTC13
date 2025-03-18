@@ -16,18 +16,15 @@ async function insertFaqs() {
 
   for (const faq of faqs) {
     const faqItem = document.createElement("li");
-    faqItem.classList.add(
-      "py-2",
-      "w-full",
-      "flex",
-      "flex-col",
-      "gap-2",
-      "mb-3",
-    ); // Add some styling (optional)
+    faqItem.classList.add("w-full"); // Add some styling (optional)
     faqItem.innerHTML = `
-        <h3 class="font-semibold text-2xl">${faq.title}</h3>
-        <p>${faq.description}</p>
-      `;
+    <div tabindex="0" class="collapse bg-base-100 border-base-300 border">
+      <div class="collapse-title font-semibold">${faq.title}</div>
+      <div class="collapse-content text-sm">
+        ${faq.description}
+      </div>
+    </div>
+    `;
 
     faqList.appendChild(faqItem); // Append to the <ul> with ID "FAQs"
   }
