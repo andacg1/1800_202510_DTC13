@@ -39,14 +39,29 @@ export class CalSyncApi {
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
-  try {
-    const eventRef = doc(this.db, "events", eventId);
-    await deleteDoc(eventRef);
-    toast("Event deleted successfully.", "success");
-    setTimeout(() => {
-      window.location.assign("/main.html");
-    }, 500);
+    try {
+      console.log(`Attempting to delete event with ID: ${eventId}`);
+
+      const eventRef = doc(this.db, "events", eventId);
+      await deleteDoc(eventRef);
+
+      console.log(`Event ${eventId} deleted successfully.`);
+
+      // Refresh the event list if on main page
+      if (window.location.pathname.includes("main.html")) {
+        refreshEventList(); // Update the UI immediately
+      }
+
+      toast("Event deleted successfully.", "success");
+
+      // Redirect if on the event page
+      if (window.location.pathname.includes("event.html")) {
+        setTimeout(() => {
+          window.location.href = "/main.html";
+        }, 500);
+      }
     } catch (e) {
+      console.error("Error deleting event:", e);
       toast("Event deletion failed.", "error");
     }
   }

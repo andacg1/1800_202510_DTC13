@@ -73,6 +73,28 @@ async function insertUserEvents() {
   container?.replaceChildren(...rows);
 }
 
+async function refreshEventList() {
+  console.log("Refreshing event list...");
+  const events = await CalSyncApi.getUserEvents();
+  const eventList = document.getElementById("main-event-list");
+
+  if (!eventList) {
+    console.error("Event list element not found!");
+    return;
+  }
+
+  eventList.innerHTML = ""; // Clear previous events
+
+  events.forEach((event) => {
+    const eventItem = document.createElement("li");
+    eventItem.textContent = event.title;
+    eventItem.addEventListener("click", () => {
+      window.location.href = `event.html?id=${event.id}`;
+    });
+    eventList.appendChild(eventItem);
+  });
+}
+
 function handleStoreUpdate(_state: AppStoreState) {
   highlightEvents();
 }

@@ -3,17 +3,21 @@ import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
 async function fetchEventData() {
-  const params = new URLSearchParams(document.location.search);
+  const params = new URLSearchParams(window.location.search);
   const eventId = params.get("id");
+  console.log("Extracted event ID:", eventId);
   if (!eventId) {
+    alert("Error: No event ID found in the URL.");
     throw new Error("id= query parameter is required");
   }
   const event = await CalSyncApi.getEvent(eventId);
   if (!event) {
+    alert(`Error: Event with ID ${eventId} not found.`);
     throw new Error(`Could not find event with id=${eventId}`);
   }
   return event;
 }
+
 
 function timeUntil(targetDate: Date) {
   const currentTs = Date.now();
@@ -100,12 +104,24 @@ async function initEventPage() {
   const event = await fetchEventData();
   updateEventPage(event);
   scheduleCountdownUpdate(event);
+
   const deleteButton = document.getElementById("delete-event-button") as HTMLButtonElement;
+
+  if (!deleteButton) {
+    console.error("Delete button not found.");
+    return;
+  }
+
   deleteButton.addEventListener("click", async () => {
     if (confirm("Are you sure you want to delete this event?")) {
+      console.log(`Deleting event with ID: ${event.id}`); // Debug log
       await CalSyncApi.deleteEvent(event.id);
     }
   });
 }
+
+
+
+
 
 safeOnLoad(initEventPage);
