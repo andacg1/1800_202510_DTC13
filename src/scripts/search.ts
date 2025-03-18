@@ -1,7 +1,6 @@
 import { createTagsPlugin, Tag } from "@algolia/autocomplete-plugin-tags";
 import { EventData, TagData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
-import { addTags } from "./data/addTags.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import store from "./store.ts";
 import { autocomplete, AutocompleteOptions } from "@algolia/autocomplete-js";
