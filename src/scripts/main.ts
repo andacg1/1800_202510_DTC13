@@ -79,6 +79,7 @@ function handleStoreUpdate(_state: AppStoreState) {
 
 async function initMainPage() {
   await insertUserEvents();
+  await CalSyncApi.refreshEventList();
   store.subscribe(handleStoreUpdate);
   highlightEvents();
 }

@@ -3,17 +3,31 @@ import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 
 async function fetchEventData() {
-  const params = new URLSearchParams(document.location.search);
+  console.log("Current URL:", window.location.href); // Log the full URL
+
+  const params = new URLSearchParams(window.location.search);
+  console.log("URLSearchParams:", params.toString()); // Debugging log
+
   const eventId = params.get("id");
+  console.log("Extracted event ID:", eventId); // Debugging log
+
   if (!eventId) {
+    alert("Error: No event ID found in the URL.");
     throw new Error("id= query parameter is required");
   }
+
   const event = await CalSyncApi.getEvent(eventId);
+
   if (!event) {
+    alert(`Error: Event with ID ${eventId} not found.`);
     throw new Error(`Could not find event with id=${eventId}`);
   }
+
+  console.log("Fetched event data:", event);
   return event;
 }
+
+
 
 function timeUntil(targetDate: Date) {
   const currentTs = Date.now();
@@ -100,9 +114,19 @@ async function initEventPage() {
   const event = await fetchEventData();
   updateEventPage(event);
   scheduleCountdownUpdate(event);
+
   const deleteButton = document.getElementById("delete-event-button") as HTMLButtonElement;
-  deleteButton.addEventListener("click", async () => {
+
+  if (!deleteButton) {
+    console.error("Delete button not found.");
+    return;
+  }
+
+  deleteButton.addEventListener("click", async (e) => {
+    e.preventDefault(); // ⬅️ Prevents form submission
+    e.stopPropagation(); // ⬅️ Stops event bubbling
     if (confirm("Are you sure you want to delete this event?")) {
+      console.log(`Deleting event with ID: ${event.id}`);
       await CalSyncApi.deleteEvent(event.id);
     }
   });

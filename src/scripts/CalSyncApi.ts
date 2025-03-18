@@ -38,18 +38,54 @@ export class CalSyncApi {
     throw new Error("CalSyncApi is a static class");
   }
 
-  static async deleteEvent(eventId: string): Promise<void> {
+  static async refreshEventList() {
+  console.log("Refreshing event list...");
+  const events = await this.getUserEvents();
+  const eventList = document.getElementById("main-event-list");
+
+  if (!eventList) {
+    console.error("Event list element not found!");
+    return;
+  }
+
+  eventList.innerHTML = ""; // Clear previous events
+
+  events.forEach((event) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="event.html?id=${event.id}">${event.title}</a>`; // Ensure ID is included
+    eventList.appendChild(li);
+  });
+
+  console.log("Event list updated.");
+}
+
+
+ static async deleteEvent(eventId: string): Promise<void> {
   try {
+    console.log(`Attempting to delete event with ID: ${eventId}`);
+
     const eventRef = doc(this.db, "events", eventId);
     await deleteDoc(eventRef);
+
+    console.log(`Event ${eventId} deleted successfully.`);
     toast("Event deleted successfully.", "success");
-    setTimeout(() => {
-      window.location.assign("/main.html");
-    }, 500);
-    } catch (e) {
-      toast("Event deletion failed.", "error");
+
+    // Refresh the event list after deletion
+    await this.refreshEventList();
+
+    // Redirect only if on event.html
+    if (window.location.pathname.includes("event.html")) {
+      setTimeout(() => {
+        window.location.href = "/main.html";
+      }, 500);
     }
+  } catch (e) {
+    console.error("Error deleting event:", e);
+    toast("Event deletion failed.", "error");
   }
+  }
+
+
 
   static {
     this.#store = store;
@@ -208,15 +244,26 @@ export class CalSyncApi {
   }
 
   static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
+  try {
+    console.log(`Fetching event with ID: ${eventId}`);
     const eventRef = doc(this.db, "events", eventId).withConverter(
-      CalSyncApi.eventConverter,
+      this.eventConverter
     );
+    const eventSnapshot = await getDoc(eventRef);
 
-    const eventSnapshot = await getDoc(
-      eventRef.withConverter(CalSyncApi.eventConverter),
-    );
+    if (!eventSnapshot.exists()) {
+      console.error(`Event not found: ${eventId}`);
+      return undefined;
+    }
+
+    console.log("Event fetched:", eventSnapshot.data());
     return eventSnapshot.data();
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    return undefined;
   }
+}
+
 
   static async findEvents(searchFor: string): Promise<WithId<EventData>[]> {}
 
