@@ -36,13 +36,14 @@ async function loadAllEvents() {
 
 const filterEvents = (query: string) => {
   const filterTag = store.getState().currentTag;
+  const isPublic = document.querySelector(".toggle").checked; // Get toggle state
+
   return store
     .getState()
-    .filteredEvents.filter((event) => {
-      if (!filterTag) {
-        return true;
-      }
-
+    .filteredEvents
+    .filter((event) => event.isPublic === isPublic) // Filter by public/private
+    .filter((event) => {
+      if (!filterTag) return true;
       return event?.tag?.id === filterTag.id;
     })
     .filter((event) =>
@@ -59,6 +60,7 @@ const filterEvents = (query: string) => {
       );
     });
 };
+
 
 function enableAutocomplete(
   options: Partial<AutocompleteOptions<WithId<EventData>>>,

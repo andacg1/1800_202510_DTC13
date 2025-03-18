@@ -1,49 +1,53 @@
 <!doctype html>
 <html lang="en" data-theme="sunset">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <title>CalSync</title>
 
-    <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
-    <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CalSync</title>
 
-    <link rel="stylesheet" href="/src/index.css" />
-    <link href="/styles/style.css" rel="stylesheet" />
+  <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
+  <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
 
-    <script type="module" src="/src/scripts/app"></script>
-    <script type="module" src="/src/scripts/search"></script>
+  <link rel="stylesheet" href="/src/index.css" />
+  <link href="/styles/style.css" rel="stylesheet" />
 
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
-    />
-  </head>
-  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
-    <header id="top-navbar">
-      <div class="skeleton h-18 w-full rounded-none"></div>
-    </header>
-    <main
-      id="main-content"
-      class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
-    >
-      <div id="autocomplete" class="w-full px-4 rounded-lg">
-        <form class="filter justify-center p-2" id="filter-form">
-          <input class="btn btn-square" type="reset" value="×" />
-        </form>
-      </div>
+  <script type="module" src="/src/scripts/app"></script>
+  <script type="module" src="/src/scripts/search"></script>
 
-      <ul
-        class="list bg-base-100 rounded-box shadow-md"
-        id="search-results-container"
-      ></ul>
-    </main>
-    <div id="fake-dock"></div>
-    <nav id="bottom-navbar"></nav>
-  </body>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+  <!-- script for the toggle button -->
+  <script>
+    function toggleLabel(event) {
+      const label = document.getElementById("toggle-label");
+      label.textContent = event.target.checked ? "Public" : "Private";
+    }
+  </script>
+</head>
+
+<body class="flex flex-col h-dvh max-h-dvh items-stretch">
+  <header id="top-navbar">
+    <div class="skeleton h-18 w-full rounded-none"></div>
+  </header>
+  <main id="main-content" class="flex flex-col items-center overflow-y-scroll grow-1 py-8">
+    <!-- Toggle button of public and private event type -->
+    <div class="w-full flex justify-end">
+      <label class="flex items-center cursor-pointer space-x-2 px-4">
+        <h1 class="text-lg">Event Type:</h1>
+        <input type="checkbox" class="toggle toggle-primary" onchange="toggleLabel(event)">
+        <span id="toggle-label" class="text-lg font-medium min-w-[60px] text-center">Private</span>
+      </label>
+    </div>
+    <div id="autocomplete" class="w-full px-4 rounded-lg">
+      <form class="filter justify-center p-2" id="filter-form">
+        <input class="btn btn-square" type="reset" value="×" />
+      </form>
+    </div>
+    <ul class="list bg-base-100 rounded-box shadow-md" id="search-results-container"></ul>
+  </main>
+  <div id="fake-dock"></div>
+  <nav id="bottom-navbar"></nav>
+</body>
+
 </html>
