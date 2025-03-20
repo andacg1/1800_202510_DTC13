@@ -1,15 +1,24 @@
 // @ts-check
-import { EmailAuthProvider } from "firebase/auth";
+import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import { collection, doc, setDoc } from "firebase/firestore";
 import store from "./store.ts";
 const ui = new firebaseui.auth.AuthUI(store.getState().auth);
 const db = store.getState().db;
 
+const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope(
+  "https://www.googleapis.com/auth/calendar.events.readonly",
+);
+
 const uiConfig: firebaseui.auth.Config = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult: any) {
       console.log(authResult);
+      console.log(JSON.stringify(authResult, null, 2));
+      const state = store.getState();
+      //const token = authResult.credential?.accessToken;
+      state.setGoogleCredential(authResult.credential);
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
@@ -25,6 +34,7 @@ const uiConfig: firebaseui.auth.Config = {
 
       // Save User ID in Zustand store
       store.setState({ userId: user.uid });
+      store.setState({ googleCredential: authResult.credential });
 
       console.log(authResult.additionalUserInfo);
       // if (authResult.additionalUserInfo.isNewUser) {         //if new user
@@ -66,12 +76,18 @@ const uiConfig: firebaseui.auth.Config = {
   signInSuccessUrl: "main.html",
   signInOptions: [
     // Leave the lines as is for the providers you want to offer your users.
-    // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    // firebase.auth.GithubAuthProvider.PROVIDER_ID,
     EmailAuthProvider.PROVIDER_ID,
-    // firebase.auth.PhoneAuthProvider.PROVIDER_ID
+    //GoogleAuthProvider.PROVIDER_ID,
+    {
+      provider: GoogleAuthProvider.PROVIDER_ID,
+      scopes: ["https://www.googleapis.com/auth/calendar.events.readonly"],
+      customParameters: {
+        // Forces account selection even when one account
+        // is available.
+        //prompt: 'select_account'
+      },
+      authMethod: "",
+    },
   ],
   // Terms of service url.
   tosUrl: "<your-tos-url>",

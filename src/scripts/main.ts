@@ -4,6 +4,7 @@ import { createHtmlElement, EventElement } from "./components.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { toShortISO } from "./lib/temporal.ts";
 import store, { AppStoreState } from "./store.ts";
+import { google } from "googleapis";
 
 type CalendarElement = HTMLInputElement & {
   getDayParts?: (date: Date) => string;
@@ -71,6 +72,29 @@ async function insertUserEvents() {
     )
     .map((event) => EventElement(event as WithId<EventData>));
   container?.replaceChildren(...rows);
+}
+
+function addTestButtonListener() {
+  const btn = document.getElementById("test-btn-do-not-use");
+  btn?.addEventListener("click", () => {
+    // const credential = store.getState().googleCredential;
+    // if (!credential) {
+    //   console.error("No credentials found");
+    //   return;
+    // }
+    // const oauth2Client = new google.auth.OAuth2(
+    //   process.env.GOOGLE_CLIENT_ID,
+    //   process.env.GOOGLE_CLIENT_SECRET,
+    //   process.env.REDIRECT_URL,
+    // );
+    //
+    // oauth2Client.setCredentials({
+    //   access_token: data.accessToken,
+    //   refresh_token: data.refreshToken,
+    // });
+    //
+    // google.calendar({ version: "v3", auth: store.getState().googleCredential });
+  });
 }
 
 function handleStoreUpdate(_state: AppStoreState) {
