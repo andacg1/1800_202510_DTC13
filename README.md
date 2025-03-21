@@ -1,97 +1,54 @@
+# React + TypeScript + Vite
 
-# Project Name
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Overview
-Summarize your project's purpose, problem solved, key features, user benefits, development context, and main technologies used.
+Currently, two official plugins are available:
 
-Example:
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-This client-side JavaScript web application provides real-time weather updates for cities worldwide. It simplifies accessing weather information through an intuitive mobile-first interface, allowing users to input a city name and receive data on temperature, humidity, and conditions.
+## Expanding the ESLint configuration
 
-Developed for the [Course Name] course, applying User-Centred Design practices, agile project management processes, integrating a weather API, and Firebase backend services.
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
----
-
-## Features
-
-Example:
-- Real-time weather updates for any city.
-- Responsive design for desktop and mobile.
-- Displays temperature, humidity, and weather conditions.
-
----
-
-## Technologies Used
-
-Example:
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Firebase for hosting
-- **Database**: Firestore
-- **API**: OpenWeatherMap API
-
----
-
-## Usage
-
-Example:
-1. Open your browser and visit `http://localhost:3000`.
-2. Enter the name of the city in the search bar and press enter.
-3. View the weather information displayed on the screen.
-
----
-
-## Project Structure
-
-Example:
-```
-project-name/
-├── src/
-│   ├── index.html
-│   ├── style.css
-│   ├── app.js
-│   └── components/
-├── package.json
-├── README.md
-└── .gitignore
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
 
----
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## Contributors
-- Jimmy Cho - BCIT CST Student with a passion for creating user-friendly applications. Fun fact: Loves playing Baldur's Gate
-- **Anderson** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
-- **Deniz Gunay** - BCIT CST Student and Fullstack Software Engineer. Fun fact: I'm addicted to Path of Exile. 
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
----
-
-## Acknowledgments
-
-Example:
-- Weather data sourced from [OpenWeatherMap](https://openweathermap.org/).
-- Code snippets for ___ algoirthm were adapted from resources such as [Stack Overflow](https://stackoverflow.com/) and [MDN Web Docs](https://developer.mozilla.org/).
-- Icons sourced from [FontAwesome](https://fontawesome.com/) and images from [Unsplash](https://unsplash.com/).
-
----
-
-## Limitations and Future Work
-### Limitations
-
-Example:
-- Currently, the app only supports city-based weather searches.
-- Limited to basic weather parameters like temperature, humidity, and conditions.
-- The user interface can be further enhanced for accessibility.
-
-### Future Work
-
-Example: 
-- Add support for location-based weather detection using GPS.
-- Implement additional weather parameters like wind speed and UV index.
-- Create a dark mode for better usability in low-light conditions.
-- Integrate user accounts for saving favorite locations.
-
----
-
-## License
-
-Example:
-This project is licensed under the MIT License. See the LICENSE file for details.
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
+```

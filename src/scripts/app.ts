@@ -6,6 +6,7 @@ import { hydrate } from "./hydrate";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import store from "./store.ts";
+import "../main.tsx";
 
 function addLogoutListener() {
   const logoutBtn = document.getElementById("logout-btn");

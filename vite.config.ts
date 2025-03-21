@@ -2,6 +2,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig, PluginOption } from "vite";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -32,5 +33,5 @@ export default defineConfig({
   optimizeDeps: {
     entries: ["*.html", "src/**/*{.html,.css,.js}"],
   },
-  plugins: [tailwindcss(), fullReloadAlways],
+  plugins: [tailwindcss(), fullReloadAlways, react()],
 });
