@@ -12,3 +12,8 @@ export const getTimeParts = (time: string) => {
   const [hours, minutes] = time.split(":").map((s) => Number(s));
   return [hours, minutes]
 }
+
+export const getPaddedTime = (time: string) => {
+  const [hours, minutes] = time.split(":")
+  return `${hours.padStart(2,'0')}:${minutes.padStart(2,'0')}`
+}

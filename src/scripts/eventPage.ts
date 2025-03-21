@@ -1,6 +1,13 @@
 import { CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
+import "add-to-calendar-button";
+import {
+  getDateParts,
+  getPaddedTime,
+  getTimeParts,
+  toShortISO,
+} from "./lib/temporal.ts";
 
 async function fetchEventData() {
   console.log("Current URL:", window.location.href); // Log the full URL
@@ -26,8 +33,6 @@ async function fetchEventData() {
   console.log("Fetched event data:", event);
   return event;
 }
-
-
 
 function timeUntil(targetDate: Date) {
   const currentTs = Date.now();
@@ -83,6 +88,51 @@ function scheduleCountdownUpdate(event: CustomEventData) {
   const interval = setInterval(countdownCb, 1000);
 }
 
+function updateAddEventButton(event: CustomEventData) {
+  const addToCalendarContainerEl = document.getElementById(
+    "add-to-calendar-container",
+  ) as HTMLElement;
+  // TODO: Calculate endTime and endDate
+  // TODO: Add organizer (related User)
+  const addToCalendarEl = document.createElement("add-to-calendar-button");
+
+  Object.assign(addToCalendarEl, {
+    name: event.title,
+    description: event.description,
+    startDate: toShortISO(event.startTimeParts.date),
+    startTime: event.startTimeParts.timeISO,
+  });
+
+  const endDate = new Date(event.startTimeParts.date);
+  endDate.setHours(endDate.getHours() + event.duration / 60);
+  const endDateParts = CalSyncApi.getDateParts(endDate.getSeconds());
+
+  const paddedStartTime = getPaddedTime(event.startTimeParts.timeISO);
+  const paddedEndTime = getPaddedTime(endDateParts.timeISO);
+  // FIXME
+
+  console.log({ paddedEndTime, paddedStartTime });
+
+  addToCalendarContainerEl.innerHTML = `
+  <add-to-calendar-button
+    name="${event.title}"
+    startDate="${toShortISO(event.startTimeParts.date)}"
+    startTime="${paddedStartTime}"
+    endDate="${toShortISO(endDate)}"
+    endTime="${paddedEndTime}"
+    description="${event.description}"
+    options="'Apple','Google','iCal','Outlook.com'"
+    label="Add to Calendar"
+    iCalFileName="CalSync-Event"
+    listStyle="overlay"
+    size="5"
+    lightMode="bodyScheme"
+  >
+  
+  </add-to-calendar-button>
+  `;
+}
+
 function updateEventPage(event: CustomEventData) {
   const form = document.getElementById("event-details-form") as HTMLFormElement;
   const titleEl: HTMLInputElement = form["event-title"];
@@ -110,12 +160,10 @@ function updateEventPage(event: CustomEventData) {
   });
 }
 
-async function initEventPage() {
-  const event = await fetchEventData();
-  updateEventPage(event);
-  scheduleCountdownUpdate(event);
-
-  const deleteButton = document.getElementById("delete-event-button") as HTMLButtonElement;
+function addDeleteEventListener(event: CustomEventData) {
+  const deleteButton = document.getElementById(
+    "delete-event-button",
+  ) as HTMLButtonElement;
 
   if (!deleteButton) {
     console.error("Delete button not found.");
@@ -130,6 +178,14 @@ async function initEventPage() {
       await CalSyncApi.deleteEvent(event.id);
     }
   });
+}
+
+async function initEventPage() {
+  const event = await fetchEventData();
+  updateEventPage(event);
+  scheduleCountdownUpdate(event);
+  updateAddEventButton(event);
+  addDeleteEventListener(event);
 }
 
 safeOnLoad(initEventPage);
