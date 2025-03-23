@@ -10,13 +10,13 @@ import {
 } from "./lib/temporal.ts";
 
 function getEventId(): string | null {
-  console.log("Current URL:", window.location.href); // Log the full URL
+  console.debug("Current URL:", window.location.href); // Log the full URL
 
   const params = new URLSearchParams(window.location.search);
-  console.log("URLSearchParams:", params.toString()); // Debugging log
+  console.debug("URLSearchParams:", params.toString()); // Debugging log
 
   const eventId = params.get("id");
-  console.log("Extracted event ID:", eventId); // Debugging log
+  console.debug("Extracted event ID:", eventId); // Debugging log
   return eventId;
 }
 
@@ -33,7 +33,7 @@ async function fetchEventData(eventId: string | null) {
     throw new Error(`Could not find event with id=${eventId}`);
   }
 
-  console.log("Fetched event data:", event);
+  console.debug("Fetched event data:", event);
   return event;
 }
 
@@ -114,7 +114,7 @@ function updateAddEventButton(event: CustomEventData) {
   const paddedEndTime = getPaddedTime(endDateParts.timeISO);
   // FIXME
 
-  console.log({ paddedEndTime, paddedStartTime });
+  console.debug({ paddedEndTime, paddedStartTime });
 
   addToCalendarContainerEl.innerHTML = `
   <add-to-calendar-button
@@ -196,7 +196,7 @@ function addDeleteEventListener(event: CustomEventData) {
     e.preventDefault(); // ⬅️ Prevents form submission
     e.stopPropagation(); // ⬅️ Stops event bubbling
     if (confirm("Are you sure you want to delete this event?")) {
-      console.log(`Deleting event with ID: ${event.id}`);
+      console.debug(`Deleting event with ID: ${event.id}`);
       await CalSyncApi.deleteEvent(event.id);
     }
   });

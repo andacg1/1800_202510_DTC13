@@ -1,7 +1,6 @@
 const parser = new DOMParser();
 
 export async function hydrate(src: string, selector: string) {
-  console.log("INJECT");
   try {
     const response = await fetch(src);
     if (!response.ok) {

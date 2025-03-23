@@ -38,7 +38,7 @@ function addEventTimeListener(formElement: HTMLFormElement) {
     const state = store.getState();
     const target = e.target as HTMLInputElement;
     const eventStartTime = new Date(state.draftEvent.startTime || Date.now());
-    console.log(target.value);
+    console.debug(target.value);
     const [hours, minutes] = target.value.split(":");
     eventStartTime.setHours(Number(hours), Number(minutes), 0, 0);
     store.getState().setDraftEvent({ startTime: target.value as Time });

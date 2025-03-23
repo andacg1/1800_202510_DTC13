@@ -89,10 +89,76 @@ function updateDockLinks() {
   }
 }
 
+function addDockButtonListeners() {
+  const dockEl = document.getElementById("bottom-navbar");
+  const eventMenuEl = document.getElementById(
+    "dock-event-menu-toggle",
+  ) as HTMLInputElement;
+  const myEventsEl = document.getElementById(
+    "dock-my-events",
+  ) as HTMLButtonElement;
+  const createEventEl = document.getElementById(
+    "dock-create-event",
+  ) as HTMLButtonElement;
+  const container = myEventsEl?.parentElement as HTMLElement;
+
+  if (eventMenuEl) {
+    eventMenuEl.addEventListener("change", (e) => {
+      if ((e.target as HTMLInputElement)?.checked) {
+        container?.classList.add("flex");
+        container?.classList.remove("hidden");
+        container.focus();
+      } else {
+        container?.classList.add("hidden");
+        container?.classList.remove("flex");
+      }
+    });
+  }
+  if (myEventsEl) {
+    myEventsEl.addEventListener(
+      "click",
+      (e) => {
+        // e.preventDefault();
+        // e.stopPropagation();
+        // TODO: create my-events.html
+        window.location.assign("/search.html");
+      },
+      true,
+    );
+  }
+  if (createEventEl) {
+    createEventEl.addEventListener(
+      "click",
+      (e) => {
+        // e.preventDefault();
+        // e.stopPropagation();
+        window.location.assign("/create.html");
+      },
+      true,
+    );
+  }
+
+  if (eventMenuEl) {
+    eventMenuEl?.addEventListener(
+      "focusout",
+      (e) => {
+        if (container.contains(e?.relatedTarget as HTMLElement)) {
+          return;
+        }
+        eventMenuEl.checked = false;
+        container?.classList.add("hidden");
+        container?.classList.remove("flex");
+      },
+      //true,
+    );
+  }
+}
+
 function initApp() {
   setAppState();
   injectElements().then(() => {
     updateDockLinks();
+    addDockButtonListeners();
   });
   checkAuthState();
   updateDockLinks();

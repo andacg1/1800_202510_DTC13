@@ -42,7 +42,7 @@ export class CalSyncApi {
 
   static async refreshEventList() {
     // TODO: Make this dependent on currently selected date
-    console.log("Refreshing event list...");
+    console.debug("Refreshing event list...");
     const events = await this.getUserEvents();
     const eventList = document.getElementById("main-event-list");
 
@@ -56,17 +56,17 @@ export class CalSyncApi {
     );
     eventList?.replaceChildren(...rows);
 
-    console.log("Event list updated.");
+    console.debug("Event list updated.");
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
     try {
-      console.log(`Attempting to delete event with ID: ${eventId}`);
+      console.debug(`Attempting to delete event with ID: ${eventId}`);
 
       const eventRef = doc(this.db, "events", eventId);
       await deleteDoc(eventRef);
 
-      console.log(`Event ${eventId} deleted successfully.`);
+      console.debug(`Event ${eventId} deleted successfully.`);
       toast("Event deleted successfully.", "success");
 
       // Refresh the event list after deletion
@@ -342,7 +342,7 @@ export class CalSyncApi {
 
   static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
     try {
-      console.log(`Fetching event with ID: ${eventId}`);
+      console.debug(`Fetching event with ID: ${eventId}`);
       const eventRef = doc(this.db, "events", eventId).withConverter(
         this.eventConverter,
       );
@@ -353,7 +353,6 @@ export class CalSyncApi {
         return undefined;
       }
 
-      console.log("Event fetched:", eventSnapshot.data());
       return eventSnapshot.data();
     } catch (error) {
       console.error("Error fetching event:", error);

@@ -27,7 +27,7 @@ function getDayParts(date: Date): string {
 
 function handleDateChange(event: Event) {
   const dateString = (event.target as HTMLInputElement).value;
-  console.log((event.target as HTMLInputElement).value);
+  console.debug((event.target as HTMLInputElement).value);
   const events = store
     .getState()
     .filteredEvents.filter(
@@ -48,7 +48,7 @@ function highlightEvents() {
   if (!calendar) {
     return;
   }
-  console.log(calendar);
+  console.debug(calendar);
   calendar!.getDayParts = getDayParts;
   calendar.addEventListener("change", handleDateChange);
 }
@@ -79,7 +79,7 @@ function handleStoreUpdate(_state: AppStoreState) {
 }
 
 async function initMainPage() {
-  await CalSyncApi.getUserAttendance()
+  await CalSyncApi.getUserAttendance();
   await Promise.allSettled([
     async () => {
       await insertUserEvents();
