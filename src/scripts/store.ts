@@ -47,6 +47,7 @@ const store = createStore<AppStore>()(
       startTime: new Date().toISOString().substring(11, 16) as Time,
       duration: 60,
       tagName: null,
+      isPublic: false,
     } satisfies Required<DraftEvent>,
     setDraftEvent: (draftEvent: DraftEvent) =>
       set((state) => ({

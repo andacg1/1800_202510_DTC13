@@ -13,6 +13,7 @@ import {
   updateDoc,
   where,
   WithFieldValue,
+  deleteDoc,
 } from "firebase/firestore";
 import {
   CustomEventData,
@@ -23,13 +24,13 @@ import {
   UserData,
   DocumentReference,
   WithId,
+  AttendantData,
 } from "./Api";
 import { EventElement } from "./components.ts";
 import { getUserRef } from "./lib/auth.ts";
 import { getDateParts, getTimeParts } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
-import { deleteDoc } from "firebase/firestore";
 
 export class CalSyncApi {
   static #store: CalSyncStore;
@@ -119,6 +120,7 @@ export class CalSyncApi {
   };
 
   static faqConverter = this.converter<FaqData>();
+  static attendantConverter = this.converter<AttendantData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
@@ -240,6 +242,90 @@ export class CalSyncApi {
     return querySnapshot.docs.map((doc) =>
       CalSyncApi.eventConverter.fromFirestore(doc),
     );
+  }
+
+  static async getUserAttendance(): Promise<WithId<AttendantData>[]> {
+    const q = query(
+      this.collection<AttendantData>("attendants"),
+      where("user", "==", await getUserRef()),
+    ).withConverter(CalSyncApi.attendantConverter);
+
+    const querySnapshot = await getDocs(
+      q.withConverter(this.attendantConverter),
+    );
+    return querySnapshot.docs.map((doc) =>
+      CalSyncApi.attendantConverter.fromFirestore(doc),
+    );
+  }
+
+  static async getUserAttendanceFor(
+    eventId: string,
+  ): Promise<WithId<AttendantData> | null> {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      this.eventConverter,
+    );
+    const q = query(
+      this.collection<AttendantData>("attendants"),
+      where("user", "==", await getUserRef()),
+      where("event", "==", eventRef),
+    ).withConverter(CalSyncApi.attendantConverter);
+
+    const querySnapshot = await getDocs(
+      q.withConverter(this.attendantConverter),
+    );
+    const mappedDocs = querySnapshot.docs.map((doc) =>
+      CalSyncApi.attendantConverter.fromFirestore(doc),
+    );
+    return mappedDocs.length > 0 ? mappedDocs[0] : null;
+  }
+
+  static async setUserAttendanceFor(
+    eventId: string,
+    attending: boolean,
+  ): Promise<void> {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      this.eventConverter,
+    );
+    const userRef = await getUserRef();
+
+    if (attending) {
+      const newAttendantRef = doc(
+        this.db,
+        "attendants",
+        `${userRef.id}_${eventId}`,
+      );
+      try {
+        await setDoc(newAttendantRef, {
+          user: userRef,
+          event: eventRef,
+        });
+
+        toast("Event attendance confirmed.", "success");
+        setTimeout(() => {
+          window.location.assign("/main.html");
+        }, 500);
+      } catch (e) {
+        console.error(e);
+        toast("Event creation failed.", "error");
+      }
+    } else {
+      //const attendance = await CalSyncApi.getUserAttendanceFor(eventId)
+      const q = query(
+        this.collection<AttendantData>("attendants"),
+        where("user", "==", await getUserRef()),
+        where("event", "==", eventRef),
+      ).withConverter(CalSyncApi.attendantConverter);
+
+      // TODO
+      const querySnapshot = await getDocs(
+        q.withConverter(this.attendantConverter),
+      );
+      if (querySnapshot) {
+        // TODO
+        // querySnapshot.docs[0];
+        // deleteDoc(querySnapshot.docs[0]);
+      }
+    }
   }
 
   static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
