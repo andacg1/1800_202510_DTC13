@@ -1,4 +1,4 @@
-import { CustomEventData, EventData } from "./Api";
+import { AttendanceData, CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import "add-to-calendar-button";
@@ -9,15 +9,18 @@ import {
   toShortISO,
 } from "./lib/temporal.ts";
 
-async function fetchEventData() {
-  console.log("Current URL:", window.location.href); // Log the full URL
+function getEventId(): string | null {
+  console.debug("Current URL:", window.location.href); // Log the full URL
 
   const params = new URLSearchParams(window.location.search);
-  console.log("URLSearchParams:", params.toString()); // Debugging log
+  console.debug("URLSearchParams:", params.toString()); // Debugging log
 
   const eventId = params.get("id");
-  console.log("Extracted event ID:", eventId); // Debugging log
+  console.debug("Extracted event ID:", eventId); // Debugging log
+  return eventId;
+}
 
+async function fetchEventData(eventId: string | null) {
   if (!eventId) {
     alert("Error: No event ID found in the URL.");
     throw new Error("id= query parameter is required");
@@ -30,7 +33,7 @@ async function fetchEventData() {
     throw new Error(`Could not find event with id=${eventId}`);
   }
 
-  console.log("Fetched event data:", event);
+  console.debug("Fetched event data:", event);
   return event;
 }
 
@@ -111,7 +114,7 @@ function updateAddEventButton(event: CustomEventData) {
   const paddedEndTime = getPaddedTime(endDateParts.timeISO);
   // FIXME
 
-  console.log({ paddedEndTime, paddedStartTime });
+  console.debug({ paddedEndTime, paddedStartTime });
 
   addToCalendarContainerEl.innerHTML = `
   <add-to-calendar-button
@@ -142,6 +145,7 @@ function updateEventPage(event: CustomEventData) {
   titleEl.value = event.title;
   descriptionEl.value = event.description;
   durationEl.value = String(event.duration);
+  //attendingEl.value = String(event.duration);
 
   // Set event listeners
   titleEl.addEventListener("change", async (e) => {
@@ -160,6 +164,24 @@ function updateEventPage(event: CustomEventData) {
   });
 }
 
+function addUserAttendingListener(
+  attendance: AttendanceData | null,
+  eventId: string,
+) {
+  const form = document.getElementById("event-details-form") as HTMLFormElement;
+  const userAttendingEl: HTMLInputElement = form["user-attending"];
+  userAttendingEl.checked = !!attendance;
+
+  // TODO: Hide if event is in the past
+  userAttendingEl.disabled = false;
+
+  // Set event listeners
+  userAttendingEl.addEventListener("change", async (e) => {
+    const target = e.target as HTMLInputElement;
+    await CalSyncApi.setUserAttendanceFor(eventId, target?.checked);
+  });
+}
+
 function addDeleteEventListener(event: CustomEventData) {
   const deleteButton = document.getElementById(
     "delete-event-button",
@@ -174,18 +196,25 @@ function addDeleteEventListener(event: CustomEventData) {
     e.preventDefault(); // ⬅️ Prevents form submission
     e.stopPropagation(); // ⬅️ Stops event bubbling
     if (confirm("Are you sure you want to delete this event?")) {
-      console.log(`Deleting event with ID: ${event.id}`);
+      console.debug(`Deleting event with ID: ${event.id}`);
       await CalSyncApi.deleteEvent(event.id);
     }
   });
 }
 
 async function initEventPage() {
-  const event = await fetchEventData();
-  updateEventPage(event);
-  scheduleCountdownUpdate(event);
-  updateAddEventButton(event);
-  addDeleteEventListener(event);
+  const eventId = getEventId();
+  fetchEventData(eventId).then((event) => {
+    updateEventPage(event);
+    scheduleCountdownUpdate(event);
+    updateAddEventButton(event);
+    addDeleteEventListener(event);
+  });
+  if (eventId) {
+    CalSyncApi.getUserAttendanceFor(eventId).then((attendance) => {
+      addUserAttendingListener(attendance, eventId);
+    });
+  }
 }
 
 safeOnLoad(initEventPage);

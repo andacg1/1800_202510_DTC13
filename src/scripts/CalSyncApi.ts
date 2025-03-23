@@ -13,6 +13,7 @@ import {
   updateDoc,
   where,
   WithFieldValue,
+  deleteDoc,
 } from "firebase/firestore";
 import {
   CustomEventData,
@@ -23,13 +24,13 @@ import {
   UserData,
   DocumentReference,
   WithId,
+  AttendanceData,
 } from "./Api";
 import { EventElement } from "./components.ts";
 import { getUserRef } from "./lib/auth.ts";
 import { getDateParts, getTimeParts } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
-import { deleteDoc } from "firebase/firestore";
 
 export class CalSyncApi {
   static #store: CalSyncStore;
@@ -41,7 +42,7 @@ export class CalSyncApi {
 
   static async refreshEventList() {
     // TODO: Make this dependent on currently selected date
-    console.log("Refreshing event list...");
+    console.debug("Refreshing event list...");
     const events = await this.getUserEvents();
     const eventList = document.getElementById("main-event-list");
 
@@ -55,17 +56,17 @@ export class CalSyncApi {
     );
     eventList?.replaceChildren(...rows);
 
-    console.log("Event list updated.");
+    console.debug("Event list updated.");
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
     try {
-      console.log(`Attempting to delete event with ID: ${eventId}`);
+      console.debug(`Attempting to delete event with ID: ${eventId}`);
 
       const eventRef = doc(this.db, "events", eventId);
       await deleteDoc(eventRef);
 
-      console.log(`Event ${eventId} deleted successfully.`);
+      console.debug(`Event ${eventId} deleted successfully.`);
       toast("Event deleted successfully.", "success");
 
       // Refresh the event list after deletion
@@ -119,6 +120,7 @@ export class CalSyncApi {
   };
 
   static faqConverter = this.converter<FaqData>();
+  static attendanceConverter = this.converter<AttendanceData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
@@ -242,9 +244,105 @@ export class CalSyncApi {
     );
   }
 
+  static async getUserAttendance(): Promise<WithId<AttendanceData>[]> {
+    const q = query(
+      this.collection<AttendanceData>("attendance"),
+      where("user", "==", await getUserRef()),
+    ).withConverter(CalSyncApi.attendanceConverter);
+
+    const querySnapshot = await getDocs(
+      q.withConverter(this.attendanceConverter),
+    );
+    const mappedAttendance = querySnapshot.docs.map((doc) =>
+      CalSyncApi.attendanceConverter.fromFirestore(doc),
+    );
+    try {
+      store
+        .getState()
+        .setUserAttendance(
+          mappedAttendance.map((attendance) => attendance.event.id),
+        );
+    } catch (e) {
+      console.error(e);
+    }
+    return mappedAttendance;
+  }
+
+  static async getUserAttendanceFor(
+    eventId: string,
+  ): Promise<WithId<AttendanceData> | null> {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      this.eventConverter,
+    );
+    const q = query(
+      this.collection<AttendanceData>("attendance"),
+      where("user", "==", await getUserRef()),
+      where("event", "==", eventRef),
+    ).withConverter(CalSyncApi.attendanceConverter);
+
+    const querySnapshot = await getDocs(
+      q.withConverter(this.attendanceConverter),
+    );
+    const mappedDocs = querySnapshot.docs.map((doc) =>
+      CalSyncApi.attendanceConverter.fromFirestore(doc),
+    );
+    return mappedDocs.length > 0 ? mappedDocs[0] : null;
+  }
+
+  static async setUserAttendanceFor(
+    eventId: string,
+    attending: boolean,
+  ): Promise<void> {
+    const eventRef = doc(this.db, "events", eventId).withConverter(
+      this.eventConverter,
+    );
+    const userRef = await getUserRef();
+
+    if (attending) {
+      const newAttendantRef = doc(
+        this.db,
+        "attendance",
+        `${userRef.id}_${eventId}`,
+      );
+      try {
+        const attendance = {
+          user: userRef,
+          event: eventRef,
+        };
+        await setDoc(newAttendantRef, attendance);
+
+        store.getState().addUserAttendance(eventRef.id);
+
+        toast("Event attendance confirmed.", "success");
+      } catch (e) {
+        console.error(e);
+        toast("Failed to confirm attendance.", "error");
+      }
+      return;
+    }
+
+    // delete attendance
+    const attendanceRef = doc(
+      this.db,
+      "attendance",
+      `${userRef.id}_${eventId}`,
+    );
+    if (attendanceRef) {
+      try {
+        await deleteDoc(attendanceRef);
+        store.getState().removeUserAttendance(eventRef.id);
+
+        toast("Removed from your events.", "success");
+      } catch (e) {
+        console.error(e);
+        toast("Failed to remove from your events.", "error");
+      }
+    }
+  }
+
   static async getEvent(eventId: string): Promise<CustomEventData | undefined> {
     try {
-      console.log(`Fetching event with ID: ${eventId}`);
+      console.debug(`Fetching event with ID: ${eventId}`);
       const eventRef = doc(this.db, "events", eventId).withConverter(
         this.eventConverter,
       );
@@ -255,7 +353,6 @@ export class CalSyncApi {
         return undefined;
       }
 
-      console.log("Event fetched:", eventSnapshot.data());
       return eventSnapshot.data();
     } catch (error) {
       console.error("Error fetching event:", error);

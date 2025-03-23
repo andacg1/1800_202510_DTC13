@@ -41,4 +41,9 @@ export type FaqData = {
   description: string;
 };
 
+export type AttendanceData = {
+  user: DocumentReference;
+  event: DocumentReference;
+};
+
 export type DocumentReference = DocumentReference;

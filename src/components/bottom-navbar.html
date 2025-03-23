@@ -26,12 +26,34 @@
     <span class="dock-label">Search</span>
   </a>
 
-  <a class="" href="create.html">
-    <i class="fa-solid fa-calendar"></i>
+  <a class="relative">
+    <label class="swap swap-rotate">
+      <!-- this hidden checkbox controls the state -->
+      <input type="checkbox" id="dock-event-menu-toggle" />
+
+      <!-- event icon -->
+      <i class="fa-solid fa-calendar swap-off"></i>
+
+      <!-- close icon -->
+      <i class="fa-solid fa-times swap-on fill-current"></i>
+    </label>
     <span class="dock-label">Event</span>
+
+    <div class="absolute bottom-full flex-col gap-3 hidden">
+      <button class="btn btn-circle relative" id="dock-my-events">
+        <i class="fa-solid fa-badge-check"></i>
+        <span class="absolute left-[120%] text-nowrap text-xs">My Events</span>
+      </button>
+
+      <button class="btn btn-circle relative" id="dock-create-event">
+        <i class="fa-solid fa-plus"></i>
+        <span class="absolute left-[120%] text-nowrap text-xs"
+          >Create Event</span
+        >
+      </button>
+    </div>
   </a>
 
-  <!-- TODO: Add support.html -->
   <a class="" href="support.html">
     <i class="fa-solid fa-circle-question"></i>
     <span class="dock-label">Support</span>
