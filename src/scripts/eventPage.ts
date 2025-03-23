@@ -1,4 +1,4 @@
-import { CustomEventData, EventData } from "./Api";
+import { AttendantData, CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import "add-to-calendar-button";
@@ -9,7 +9,7 @@ import {
   toShortISO,
 } from "./lib/temporal.ts";
 
-async function fetchEventData() {
+function getEventId(): string | null {
   console.log("Current URL:", window.location.href); // Log the full URL
 
   const params = new URLSearchParams(window.location.search);
@@ -17,7 +17,10 @@ async function fetchEventData() {
 
   const eventId = params.get("id");
   console.log("Extracted event ID:", eventId); // Debugging log
+  return eventId;
+}
 
+async function fetchEventData(eventId: string | null) {
   if (!eventId) {
     alert("Error: No event ID found in the URL.");
     throw new Error("id= query parameter is required");
@@ -142,6 +145,7 @@ function updateEventPage(event: CustomEventData) {
   titleEl.value = event.title;
   descriptionEl.value = event.description;
   durationEl.value = String(event.duration);
+  //attendingEl.value = String(event.duration);
 
   // Set event listeners
   titleEl.addEventListener("change", async (e) => {
@@ -157,6 +161,24 @@ function updateEventPage(event: CustomEventData) {
   durationEl.addEventListener("change", async (e) => {
     const target = e.target as HTMLInputElement;
     await CalSyncApi.updateEvent(event.id, { duration: Number(target.value) });
+  });
+}
+
+function addUserAttendingListener(attendance: AttendantData | null) {
+  const form = document.getElementById("event-details-form") as HTMLFormElement;
+  const userAttendingEl: HTMLInputElement = form["user-attending"];
+
+  userAttendingEl.checked = !!attendance;
+  //attendingEl.value = String(event.duration);
+
+  // Set event listeners
+  userAttendingEl.addEventListener("change", async (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target?.checked) {
+      // TODO
+      //await CalSyncApi.updateEvent(event.id, { duration: (e.target as HTMLInputElement)?.checked });
+
+    }
   });
 }
 
@@ -181,11 +203,18 @@ function addDeleteEventListener(event: CustomEventData) {
 }
 
 async function initEventPage() {
-  const event = await fetchEventData();
-  updateEventPage(event);
-  scheduleCountdownUpdate(event);
-  updateAddEventButton(event);
-  addDeleteEventListener(event);
+  const eventId = getEventId();
+  fetchEventData(eventId).then((event) => {
+    updateEventPage(event);
+    scheduleCountdownUpdate(event);
+    updateAddEventButton(event);
+    addDeleteEventListener(event);
+  });
+  if (eventId) {
+    CalSyncApi.getUserAttendanceFor(eventId).then((attendance) => {
+      addUserAttendingListener(attendance);
+    });
+  }
 }
 
 safeOnLoad(initEventPage);
