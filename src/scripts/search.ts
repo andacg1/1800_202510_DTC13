@@ -205,7 +205,6 @@ function addIsPublicListener() {
     "[name='is-public-filter']",
   ) as HTMLInputElement;
   isPublicInput.addEventListener("change", (e) => {
-    console.log(e);
     toggleLabel(e);
   });
 }

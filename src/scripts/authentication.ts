@@ -9,7 +9,7 @@ const db = store.getState().db;
 const uiConfig: firebaseui.auth.Config = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult: any) {
-      console.log(authResult);
+      console.debug(authResult);
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
@@ -26,7 +26,7 @@ const uiConfig: firebaseui.auth.Config = {
       // Save User ID in Zustand store
       store.setState({ userId: user.uid });
 
-      console.log(authResult.additionalUserInfo);
+      console.debug(authResult.additionalUserInfo);
       // if (authResult.additionalUserInfo.isNewUser) {         //if new user
       if (user.name !== null) {
         //if new user
@@ -42,7 +42,7 @@ const uiConfig: firebaseui.auth.Config = {
               email: user.email, //with authenticated user's ID (user.uid)
             });
 
-            console.log("New user added to firestore: ", docRef.id);
+            console.debug("New user added to firestore: ", docRef.id);
             window.location.assign("main.html"); //re-direct to main.html after signup
           } catch (e) {
             console.error("Error adding document: ", e);

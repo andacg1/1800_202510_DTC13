@@ -7,7 +7,7 @@ export async function addTags() {
   const events = await CalSyncApi.getUserAttendance();
   //const tags = await CalSyncApi.getAllTags();
 
-  console.log(events);
+  console.debug(events);
 
   // for await (const event of events) {
   //   const tagRef = doc(CalSyncApi.db, "tags", pickRandom(tags).id);
