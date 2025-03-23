@@ -1,5 +1,6 @@
 import type { EventData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
+import store from "./store.ts";
 
 export function createHtmlElement(html: string) {
   const template = document.createElement("template");
@@ -9,11 +10,12 @@ export function createHtmlElement(html: string) {
 
 export const EventElement = (event: WithId<EventData>) => {
   const { startTime, id, title, description, duration, user } = event;
+  const { userAttendance } = store.getState();
   const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
     startTime.seconds,
   );
   return createHtmlElement(`
-            <a href="/event.html?id=${id}" class="list-row">
+            <a href="/event.html?id=${id}" class="list-row hover:bg-neutral transition-all shadow-md">
             <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
             <div class="">${date.getDate()}</div>
             <div class="text-sm text-primary">${
@@ -21,28 +23,15 @@ export const EventElement = (event: WithId<EventData>) => {
             }</div>
             </div>
             <div class="list-col-grow gap-2 flex flex-col pt-2">
-              <div>${title}</div>
+              <div class="flex flex-row justify-between pr-1">
+                <span>${title}</span>
+                ${userAttendance.includes(id) ? `<i class="fa-solid fa-star self-end text-primary"></i>` : ""}
+              </div>
               <div class="text-xs uppercase font-semibold opacity-60">
                 ${hours}:${minutes} ${amPm}
               </div>
+              
             </div>
-            <button class="btn btn-square btn-ghost">
-              <svg
-                class="size-[1.2em]"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 3L20 12 6 21 6 3z"></path>
-                </g>
-              </svg>
-            </button>
             </a>
   `);
 };
