@@ -236,12 +236,10 @@ async function initSearchPage() {
     loadAllEvents(),
     CalSyncApi.getUserAttendance(),
   ]);
-  // await loadAllEvents();
-  // const tags = await CalSyncApi.getAllTags();
   injectTags(tags);
   addTagListener();
   addIsPublicListener();
-  await addTags();
+  //await addTags();
   enableAutocomplete({ plugins: [tagsPlugin] });
   toggleLabel();
 }
