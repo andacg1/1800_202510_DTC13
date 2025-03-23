@@ -119,8 +119,13 @@ function enableAutocomplete(
               const { amPm, hours, minutes, date } = CalSyncApi.getDateParts(
                 startTime.seconds,
               );
+              const { userAttendance } = store.getState();
+              // Algolia is making it really difficult to just reuse the EventElement function
               return html`
-                <a href="/event.html?id=${id}" class="list-row">
+                <a
+                  href="/event.html?id=${id}"
+                  class="list-row hover:bg-neutral transition-all"
+                >
                   <div
                     class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12"
                   >
@@ -130,28 +135,31 @@ function enableAutocomplete(
                     </div>
                   </div>
                   <div class="list-col-grow gap-2 flex flex-col pt-2">
-                    <div>${title}</div>
+                    <div class="flex flex-row justify-between pr-1">
+                      <span>${title}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        height="14"
+                        width="15.75"
+                        style="display:${userAttendance.includes(id)
+                          ? "inline"
+                          : "none"}"
+                      >
+                        <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path
+                          fill="var(--color-primary)"
+                          d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 
+1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 
+2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 
+225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
+                        />
+                      </svg>
+                    </div>
                     <div class="text-xs uppercase font-semibold opacity-60">
                       ${hours}:${minutes} ${amPm}
                     </div>
                   </div>
-                  <button class="btn btn-square btn-ghost">
-                    <svg
-                      class="size-[1.2em]"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                    >
-                      <g
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        stroke-width="2"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path d="M6 3L20 12 6 21 6 3z"></path>
-                      </g>
-                    </svg>
-                  </button>
                 </a>
               `;
             },
@@ -171,7 +179,7 @@ function injectTags(tags: WithId<TagData>[]) {
   for (const tag of tags) {
     const input = document.createElement("input");
     Object.assign(input, {
-      className: "btn text-xs",
+      className: "btn text-xs mt-1",
       type: "radio",
       name: "tags",
       ariaLabel: tag.name,
@@ -208,7 +216,7 @@ function addTagListener() {
     console.log(e);
     const targetTagId = (e.target as HTMLInputElement).value;
     const allTags = store.getState().tags;
-    focusAutocomplete();
+    setTimeout(focusAutocomplete, 200);
 
     const newTag = allTags.find((tag) => tag.id == targetTagId);
     if (!newTag) {
@@ -219,12 +227,18 @@ function addTagListener() {
   });
   tagForm.addEventListener("reset", (e) => {
     store.getState().setCurrentTag(null);
+    setTimeout(focusAutocomplete, 200);
   });
 }
 
 async function initSearchPage() {
-  await loadAllEvents();
-  const tags = await CalSyncApi.getAllTags();
+  const [tags] = await Promise.all([
+    CalSyncApi.getAllTags(),
+    loadAllEvents(),
+    CalSyncApi.getUserAttendance(),
+  ]);
+  // await loadAllEvents();
+  // const tags = await CalSyncApi.getAllTags();
   injectTags(tags);
   addTagListener();
   addIsPublicListener();

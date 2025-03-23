@@ -24,7 +24,7 @@ import {
   UserData,
   DocumentReference,
   WithId,
-  AttendantData,
+  AttendanceData,
 } from "./Api";
 import { EventElement } from "./components.ts";
 import { getUserRef } from "./lib/auth.ts";
@@ -120,7 +120,7 @@ export class CalSyncApi {
   };
 
   static faqConverter = this.converter<FaqData>();
-  static attendantConverter = this.converter<AttendantData>();
+  static attendanceConverter = this.converter<AttendanceData>();
   static eventConverter = {
     toFirestore: (data: CustomEventData) => data,
     fromFirestore: (snap: QueryDocumentSnapshot) => {
@@ -244,37 +244,47 @@ export class CalSyncApi {
     );
   }
 
-  static async getUserAttendance(): Promise<WithId<AttendantData>[]> {
+  static async getUserAttendance(): Promise<WithId<AttendanceData>[]> {
     const q = query(
-      this.collection<AttendantData>("attendants"),
+      this.collection<AttendanceData>("attendance"),
       where("user", "==", await getUserRef()),
-    ).withConverter(CalSyncApi.attendantConverter);
+    ).withConverter(CalSyncApi.attendanceConverter);
 
     const querySnapshot = await getDocs(
-      q.withConverter(this.attendantConverter),
+      q.withConverter(this.attendanceConverter),
     );
-    return querySnapshot.docs.map((doc) =>
-      CalSyncApi.attendantConverter.fromFirestore(doc),
+    const mappedAttendance = querySnapshot.docs.map((doc) =>
+      CalSyncApi.attendanceConverter.fromFirestore(doc),
     );
+    try {
+      store
+        .getState()
+        .setUserAttendance(
+          mappedAttendance.map((attendance) => attendance.event.id),
+        );
+    } catch (e) {
+      console.error(e);
+    }
+    return mappedAttendance;
   }
 
   static async getUserAttendanceFor(
     eventId: string,
-  ): Promise<WithId<AttendantData> | null> {
+  ): Promise<WithId<AttendanceData> | null> {
     const eventRef = doc(this.db, "events", eventId).withConverter(
       this.eventConverter,
     );
     const q = query(
-      this.collection<AttendantData>("attendants"),
+      this.collection<AttendanceData>("attendance"),
       where("user", "==", await getUserRef()),
       where("event", "==", eventRef),
-    ).withConverter(CalSyncApi.attendantConverter);
+    ).withConverter(CalSyncApi.attendanceConverter);
 
     const querySnapshot = await getDocs(
-      q.withConverter(this.attendantConverter),
+      q.withConverter(this.attendanceConverter),
     );
     const mappedDocs = querySnapshot.docs.map((doc) =>
-      CalSyncApi.attendantConverter.fromFirestore(doc),
+      CalSyncApi.attendanceConverter.fromFirestore(doc),
     );
     return mappedDocs.length > 0 ? mappedDocs[0] : null;
   }
@@ -291,39 +301,41 @@ export class CalSyncApi {
     if (attending) {
       const newAttendantRef = doc(
         this.db,
-        "attendants",
+        "attendance",
         `${userRef.id}_${eventId}`,
       );
       try {
-        await setDoc(newAttendantRef, {
+        const attendance = {
           user: userRef,
           event: eventRef,
-        });
+        };
+        await setDoc(newAttendantRef, attendance);
+
+        store.getState().addUserAttendance(eventRef.id);
 
         toast("Event attendance confirmed.", "success");
-        setTimeout(() => {
-          window.location.assign("/main.html");
-        }, 500);
       } catch (e) {
         console.error(e);
-        toast("Event creation failed.", "error");
+        toast("Failed to confirm attendance.", "error");
       }
-    } else {
-      //const attendance = await CalSyncApi.getUserAttendanceFor(eventId)
-      const q = query(
-        this.collection<AttendantData>("attendants"),
-        where("user", "==", await getUserRef()),
-        where("event", "==", eventRef),
-      ).withConverter(CalSyncApi.attendantConverter);
+      return;
+    }
 
-      // TODO
-      const querySnapshot = await getDocs(
-        q.withConverter(this.attendantConverter),
-      );
-      if (querySnapshot) {
-        // TODO
-        // querySnapshot.docs[0];
-        // deleteDoc(querySnapshot.docs[0]);
+    // delete attendance
+    const attendanceRef = doc(
+      this.db,
+      "attendance",
+      `${userRef.id}_${eventId}`,
+    );
+    if (attendanceRef) {
+      try {
+        await deleteDoc(attendanceRef);
+        store.getState().removeUserAttendance(eventRef.id);
+
+        toast("Removed from your events.", "success");
+      } catch (e) {
+        console.error(e);
+        toast("Failed to remove from your events.", "error");
       }
     }
   }

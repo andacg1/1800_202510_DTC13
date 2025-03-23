@@ -41,7 +41,7 @@ export type FaqData = {
   description: string;
 };
 
-export type AttendantData = {
+export type AttendanceData = {
   user: DocumentReference;
   event: DocumentReference;
 };

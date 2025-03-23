@@ -1,4 +1,4 @@
-import { AttendantData, CustomEventData, EventData } from "./Api";
+import { AttendanceData, CustomEventData, EventData } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import "add-to-calendar-button";
@@ -164,21 +164,21 @@ function updateEventPage(event: CustomEventData) {
   });
 }
 
-function addUserAttendingListener(attendance: AttendantData | null) {
+function addUserAttendingListener(
+  attendance: AttendanceData | null,
+  eventId: string,
+) {
   const form = document.getElementById("event-details-form") as HTMLFormElement;
   const userAttendingEl: HTMLInputElement = form["user-attending"];
-
   userAttendingEl.checked = !!attendance;
-  //attendingEl.value = String(event.duration);
+
+  // TODO: Hide if event is in the past
+  userAttendingEl.disabled = false;
 
   // Set event listeners
   userAttendingEl.addEventListener("change", async (e) => {
     const target = e.target as HTMLInputElement;
-    if (target?.checked) {
-      // TODO
-      //await CalSyncApi.updateEvent(event.id, { duration: (e.target as HTMLInputElement)?.checked });
-
-    }
+    await CalSyncApi.setUserAttendanceFor(eventId, target?.checked);
   });
 }
 
@@ -212,7 +212,7 @@ async function initEventPage() {
   });
   if (eventId) {
     CalSyncApi.getUserAttendanceFor(eventId).then((attendance) => {
-      addUserAttendingListener(attendance);
+      addUserAttendingListener(attendance, eventId);
     });
   }
 }

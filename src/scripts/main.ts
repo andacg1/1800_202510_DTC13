@@ -12,6 +12,7 @@ type CalendarElement = HTMLInputElement & {
 
 function getDayParts(date: Date): string {
   const isoDate = toShortISO(date);
+
   const eventDates = new Set(
     store.getState().filteredEvents.map((event) => {
       const { date } = CalSyncApi.getDateParts(event.startTime.seconds);
@@ -78,8 +79,14 @@ function handleStoreUpdate(_state: AppStoreState) {
 }
 
 async function initMainPage() {
-  await insertUserEvents();
-  await CalSyncApi.refreshEventList();
+  await CalSyncApi.getUserAttendance()
+  await Promise.allSettled([
+    async () => {
+      await insertUserEvents();
+      await CalSyncApi.refreshEventList();
+    },
+  ]);
+
   store.subscribe(handleStoreUpdate);
   highlightEvents();
 }

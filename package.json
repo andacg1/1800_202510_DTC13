@@ -12,6 +12,7 @@
     "@algolia/autocomplete-js": "^1.18.1",
     "@algolia/autocomplete-plugin-tags": "^1.18.1",
     "@algolia/autocomplete-theme-classic": "^1.18.1",
+    "@fastify/deepmerge": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "add-to-calendar-button": "^2.8.6",
