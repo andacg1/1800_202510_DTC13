@@ -71,20 +71,11 @@
           <div class="btn btn-disabled join-item">minutes</div>
         </div>
 
-        <fieldset
-          class="fieldset p-4 bg-base-100 border border-base-300 rounded-box w-full"
-        >
-          <legend class="fieldset-legend">Attendance</legend>
-          <label class="fieldset-label justify-end">
-            I'm attending
-            <input
-              name="user-attending"
-              type="checkbox"
-              checked=""
-              disabled
-              class="checkbox checkbox-primary"
-            />
-          </label>
+        <!-- Edit Tag -->
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Edit Tag</legend>
+          <input list="existing-tags" type="text" class="input" id="event-tag" placeholder="Edit Tag" />
+          <datalist id="existing-tags"></datalist>
         </fieldset>
 
         <!--        TODO: Start date/time          -->
