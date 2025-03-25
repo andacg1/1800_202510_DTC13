@@ -131,7 +131,7 @@ function updateAddEventButton(event: CustomEventData) {
     size="5"
     lightMode="bodyScheme"
   >
-  
+
   </add-to-calendar-button>
   `;
 }
@@ -202,21 +202,19 @@ function addDeleteEventListener(event: CustomEventData) {
   });
 }
 
-const tagInput = document.getElementById("event-tag") as HTMLInputElement;
-const eventId = new URLSearchParams(window.location.search).get("id");
-
-async function loadEventTag() {
-    if (!eventId) return;
-    try {
-        const event = await CalSyncApi.getEvent(eventId);
-        if (event && event.tag) {
-            tagInput.value = event.tag;
-        }
-    } catch (error) {
-        console.error("Error fetching event tag:", error);
-    }
+async function initEventPage() {
+  const eventId = getEventId();
+  fetchEventData(eventId).then((event) => {
+    updateEventPage(event);
+    scheduleCountdownUpdate(event);
+    updateAddEventButton(event);
+    addDeleteEventListener(event);
+  });
+  if (eventId) {
+    CalSyncApi.getUserAttendanceFor(eventId).then((attendance) => {
+      addUserAttendingListener(attendance, eventId);
+    });
+  }
 }
-
-safeOnLoad(loadEventTag);
 
 safeOnLoad(initEventPage);
