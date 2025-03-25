@@ -202,6 +202,10 @@ function addDeleteEventListener(event: CustomEventData) {
   });
 }
 
+async function loadEventTag(event: CustomEventData) {
+  console.log("event.tag:", event.tag);
+}
+
 async function initEventPage() {
   const eventId = getEventId();
   fetchEventData(eventId).then((event) => {
@@ -209,6 +213,7 @@ async function initEventPage() {
     scheduleCountdownUpdate(event);
     updateAddEventButton(event);
     addDeleteEventListener(event);
+    loadEventTag(event);
   });
   if (eventId) {
     CalSyncApi.getUserAttendanceFor(eventId).then((attendance) => {
@@ -216,5 +221,7 @@ async function initEventPage() {
     });
   }
 }
+
+
 
 safeOnLoad(initEventPage);
