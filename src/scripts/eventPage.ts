@@ -8,6 +8,7 @@ import {
   getTimeParts,
   toShortISO,
 } from "./lib/temporal.ts";
+import { doc, getDoc } from "firebase/firestore";
 
 function getEventId(): string | null {
   console.debug("Current URL:", window.location.href); // Log the full URL
@@ -203,7 +204,26 @@ function addDeleteEventListener(event: CustomEventData) {
 }
 
 async function loadEventTag(event: CustomEventData) {
-  console.log("event.tag:", event.tag);
+  const tagInput = document.getElementById("event-tag") as HTMLInputElement;
+  console.log("123", event.tag)
+  if (event.tag) {
+    try {
+      console.log("456", CalSyncApi.db)
+      const tagRef = doc(CalSyncApi.db, `tags/${event.tag.id}`);
+      const tagSnap = await getDoc(tagRef);
+      if (tagSnap.exists()) {
+        const tagData = tagSnap.data();
+        tagInput.value = tagData.name ?? "";
+      } else {
+        tagInput.value = "(Unknown Tag)";
+      }
+    } catch (error) {
+      console.error("Failed to load tag:", error);
+      tagInput.value = "(Error)";
+    }
+  } else {
+    tagInput.value = "(No Tag)";
+  }
 }
 
 async function initEventPage() {
