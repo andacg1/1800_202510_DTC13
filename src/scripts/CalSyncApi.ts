@@ -46,6 +46,8 @@ export class CalSyncApi {
     const events = await this.getUserEvents();
     const eventList = document.getElementById("main-event-list");
 
+    store.getState().setFilteredEvents(events);
+
     if (!eventList) {
       console.error("Event list element not found!");
       return;
