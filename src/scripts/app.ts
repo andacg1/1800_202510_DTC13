@@ -13,17 +13,27 @@ function addLogoutListener() {
     console.warn("Could not find logout-btn");
     return;
   }
-
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      const auth = getAuth();
-      await signOut(auth);
-      window.location.assign("/login.html");
-    } catch (error) {
-      console.error("Error signing out:", error);
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      logoutBtn.textContent = "Logout";
+      logoutBtn.onclick = async () => {
+        try {
+          await signOut(auth);
+          window.location.assign("/login.html");
+        } catch (error) {
+          console.error("Error signing out:", error);
+        }
+      };
+    } else {
+      logoutBtn.textContent = "Login";
+      logoutBtn.onclick = () => {
+        window.location.assign("/login.html");
+      };
     }
   });
 }
+
 
 function injectElements() {
   return Promise.allSettled([
