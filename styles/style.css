@@ -44,3 +44,33 @@
     background-image: none;
     @apply bg-base-200;
 }
+
+@layer utilities {
+    .mockup-phone-display {
+        grid-column: 1/1;
+        grid-row: 1/1;
+        overflow: hidden;
+        border-radius: 20px;
+        width: 195px;
+        height: 422px;
+    }
+    .mockup-phone-camera {
+        grid-column: 1/1;
+        grid-row: 1/1;
+        background: #000;
+        height: 16px;
+        width: 63px;
+        border-radius: 8px;
+        z-index: 1;
+        margin-top: 6px;
+    }
+    .mockup-phone {
+        display: inline-grid;
+        justify-items: center;
+        border: 3px solid #6b6b6b;
+        border-radius: 30px;
+        background-color: #000;
+        padding: 6px;
+        overflow: hidden;
+    }
+}

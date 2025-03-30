@@ -44,6 +44,7 @@ export class CalSyncApi {
     // TODO: Make this dependent on currently selected date
     console.debug("Refreshing event list...");
     const events = await this.getUserEvents();
+    store.getState().setFilteredEvents(events);
     const eventList = document.getElementById("main-event-list");
 
     store.getState().setFilteredEvents(events);

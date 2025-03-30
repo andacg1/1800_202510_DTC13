@@ -34,18 +34,25 @@
     </header>
     <main
       id="main-content"
-      class="flex flex-col overflow-y-scrol py-8 px-10 space-y-6 mx-auto"
+      class="flex flex-col overflow-y-scroll py-8 px-10 space-y-6"
     >
-      <section class="mx-auto flex justify-between items-center w-[80%]">
-        <div class="text-4xl font-bold space-y-4 mt-4">
-          <h1>Stay Organized</h1>
-          <h1 class="text-blue-400 text-4xl">Stay Synced</h1>
+      <section
+        class="flex flex-row flex-wrap space-y-8 items-center justify-center max-w-5xl mx-auto"
+      >
+        <div class="h-fit shrink basis-1/2 px-8 min-w-60 max-w-100">
+          <img src="/undraw_calendar_8r6s.svg" />
         </div>
-        <div class="space-y-6">
-          <h1 class="font-extrabold flex items-center">
+        <div
+          class="flex flex-col gap-4 basis-1/2 items-center justify-center text-start"
+        >
+          <h1 class="font-extrabold flex items-end text-nowrap">
             <span class="text-blue-400 text-5xl">Cal</span>
             <span class="text-4xl">Sync</span>
           </h1>
+          <h3 class="text-4xl font-extrabold text-nowrap">
+            <span>Stay Organized</span><br />
+            <span class="text-blue-400 text-4xl">Stay Synced</span>
+          </h3>
           <a
             class="bg-emerald-600 rounded-full py-2 px-4 hover:bg-emerald-900 mt-2 w-fit"
             href="login.html"
@@ -53,15 +60,23 @@
           >
         </div>
       </section>
-      <h1 class="text-4xl font-bold mt-8">no more missed deadlines!</h1>
-      <p>Never miss an important deadline again with Calsync! Our smart scheduling features ensure you stay on top of your tasks effortlessly. Say goodbye to forgotten reminders and hello to seamless time management!</p>
-      <h1 class="text-4xl font-bold">Create custom events</h1>
-      <img src="images/create_event.png"><img>
-      <h1 class="text-4xl font-bold">Clear calendar</h1>
-      <img src="images/calendar_preview.png"><img>
-      <h1 class="text-4xl font-bold">Search and filter events</h1>
-      <img src="images/search_and_filter.png"><img>
-      <h1 class="text-4xl font-bold pb-12">and more to discover!</h1>
+      <div class="divider"></div>
+      <section
+        class="flex flex-row flex-wrap space-y-8 space-x-16 gap-12 gap-x-20 items-center justify-center mt-8 max-w-5xl mx-auto"
+      >
+        <h6 class="text-2xl text-center font-semibold mx-auto text-balance">
+          Easily keep track of your events
+        </h6>
+
+        <div class="h-fit">
+          <div class="mockup-phone border-primary">
+            <div class="mockup-phone-camera"></div>
+            <div class="mockup-phone-display">
+              <img alt="wallpaper" src="/MyEventsPage.png" />
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <div id="fake-dock"></div>
     <nav id="bottom-navbar"></nav>
