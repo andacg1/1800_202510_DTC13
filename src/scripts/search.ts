@@ -6,6 +6,7 @@ import safeOnLoad from "./lib/safeOnLoad.ts";
 import store from "./store.ts";
 import { autocomplete, AutocompleteOptions } from "@algolia/autocomplete-js";
 
+// @ts-ignore
 import "@algolia/autocomplete-theme-classic";
 import "@algolia/autocomplete-plugin-tags/dist/theme.min.css";
 
@@ -205,7 +206,7 @@ function addIsPublicListener() {
     "[name='is-public-filter']",
   ) as HTMLInputElement;
   isPublicInput.addEventListener("change", (e) => {
-    toggleLabel(e);
+    toggleLabel();
   });
 }
 

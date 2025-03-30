@@ -6,8 +6,8 @@
 
 @plugin "daisyui/theme" {
     name: sunset;
-    default: false;
-    prefersdark: false;
+    default: true;
+    prefersdark: true;
     color-scheme: dark;
     --color-base-100: oklch(22% 0.019 237.69);
     --color-base-200: oklch(20% 0.019 237.69);
@@ -37,12 +37,17 @@
     --border: 1px;
     --depth: 0;
     --noise: 0;
+    --aa-panel-max-height: 20rem;
 }
 
 .aa-Panel > .aa-GradientBottom {
     /*background-color: transparent;*/
     background-image: none;
     @apply bg-base-200;
+}
+
+.aa-Panel--scrollable {
+    max-height: 20rem;
 }
 
 @layer utilities {
