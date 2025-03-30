@@ -3,12 +3,16 @@
 @plugin "daisyui" {
     themes: sunset --default;
 }
+:root {
+    --aa-panel-max-height: 200px;
+}
 
 @plugin "daisyui/theme" {
     name: sunset;
     default: true;
     prefersdark: true;
     color-scheme: dark;
+    --aa-panel-max-height: 300px;
     --color-base-100: oklch(22% 0.019 237.69);
     --color-base-200: oklch(20% 0.019 237.69);
     --color-base-300: oklch(18% 0.019 237.69);
@@ -37,7 +41,6 @@
     --border: 1px;
     --depth: 0;
     --noise: 0;
-    --aa-panel-max-height: 20rem;
 }
 
 .aa-Panel > .aa-GradientBottom {
@@ -48,6 +51,10 @@
 
 .aa-Panel--scrollable {
     max-height: 20rem;
+}
+
+.aa-PanelLayout {
+    --aa-panel-max-height: 400px;
 }
 
 @layer utilities {

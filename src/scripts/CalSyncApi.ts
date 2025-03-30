@@ -242,9 +242,15 @@ export class CalSyncApi {
     ).withConverter(CalSyncApi.eventConverter);
 
     const querySnapshot = await getDocs(q.withConverter(this.eventConverter));
-    return querySnapshot.docs.map((doc) =>
+    const mappedEvents = querySnapshot.docs.map((doc) =>
       CalSyncApi.eventConverter.fromFirestore(doc),
     );
+    try {
+      store.getState().setFilteredEvents(mappedEvents);
+    } catch (e) {
+      console.error(e);
+    }
+    return mappedEvents;
   }
 
   static async getUserAttendance(): Promise<WithId<AttendanceData>[]> {

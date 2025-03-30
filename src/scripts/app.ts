@@ -34,7 +34,6 @@ function addLogoutListener() {
   });
 }
 
-
 function injectElements() {
   return Promise.allSettled([
     hydrate("/src/components/bottom-navbar.html", "#bottom-navbar"),
@@ -91,7 +90,9 @@ function updateDockLinks() {
   }
   for (const dockLink of dockLinks) {
     const href = dockLink.href;
-    if (String(window.location).includes(href)) {
+    if (!href && String(window.location).includes("create")) {
+      dockLink.classList.add("dock-active");
+    } else if (href && String(window.location).includes(href)) {
       dockLink.classList.add("dock-active");
     } else {
       dockLink.classList.remove("dock-active");

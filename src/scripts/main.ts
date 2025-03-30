@@ -55,9 +55,9 @@ function highlightEvents() {
 
 // {"duration":60,"startTime":{"seconds":1744171440,"nanoseconds":0},"description":"demo","title":"Test event"}
 
-async function insertUserEvents() {
-  const events = await CalSyncApi.getUserEvents();
-  store.getState().setFilteredEvents(events);
+async function insertUserEvents(events: WithId<EventData>[]) {
+  //const events = await CalSyncApi.getUserEvents();
+  //store.getState().setFilteredEvents(events);
   const calendar: CalendarElement | null = document.querySelector(
     "#my-events-calendar",
   );
@@ -74,18 +74,15 @@ async function insertUserEvents() {
   container?.replaceChildren(...rows);
 }
 
-function handleStoreUpdate(_state: AppStoreState) {
+async function handleStoreUpdate(state: AppStoreState) {
   highlightEvents();
+  await insertUserEvents(state.filteredEvents);
 }
 
 async function initMainPage() {
   await CalSyncApi.getUserAttendance();
-  await Promise.allSettled([
-    async () => {
-      await insertUserEvents();
-      await CalSyncApi.refreshEventList();
-    },
-  ]);
+  await CalSyncApi.getUserEvents();
+  await insertUserEvents(store.getState().filteredEvents);
 
   store.subscribe(handleStoreUpdate);
   highlightEvents();

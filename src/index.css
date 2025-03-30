@@ -18,13 +18,6 @@ body {
   min-height: 100vh;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-}
-
 #fake-dock {
   height: calc(4.5rem + env(safe-area-inset-bottom));
 }
