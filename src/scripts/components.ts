@@ -1,3 +1,5 @@
+import { tz } from "@date-fns/tz";
+import { format, getDate } from "date-fns";
 import type { EventData, WithId } from "./Api";
 import { CalSyncApi } from "./CalSyncApi.ts";
 import store from "./store.ts";
@@ -17,10 +19,8 @@ export const EventElement = (event: WithId<EventData>) => {
   return createHtmlElement(`
             <a href="/event.html?id=${id}" class="list-row hover:bg-neutral transition-all shadow-md">
             <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
-            <div class="">${date.getDate()}</div>
-            <div class="text-sm text-primary">${
-              date.toString().split(" ")[1]
-            }</div>
+            <div class="">${getDate(date, { in: tz("UTC") })}</div>
+            <div class="text-sm text-primary">${format(date, "LLL", { in: tz("UTC") })}</div>
             </div>
             <div class="list-col-grow gap-2 flex flex-col pt-2">
               <div class="flex flex-row justify-between pr-1">

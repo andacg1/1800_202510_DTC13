@@ -28,7 +28,7 @@ import {
 } from "./Api";
 import { EventElement } from "./components.ts";
 import { getUserRef } from "./lib/auth.ts";
-import { getDateParts, getTimeParts } from "./lib/temporal.ts";
+import { getDateParts, getTimeParts, toShortISO } from "./lib/temporal.ts";
 import { toast } from "./lib/toast.ts";
 import store, { type CalSyncStore, ShortISODate, Time } from "./store.ts";
 
@@ -144,11 +144,21 @@ export class CalSyncApi {
 
   static getDateParts(seconds: number) {
     const date = new Date(seconds * 1000);
-    const [dateISO, timeISO, amPm] = date
+    const [_dateISO, timeISO, amPm] = date
       .toLocaleString("en-US")
       .replace(",", "")
       .split(" ");
     const [hours, minutes] = timeISO.split(":");
+    const dateISO = toShortISO(date);
+
+    console.log({
+      date,
+      dateISO,
+      timeISO,
+      amPm,
+      hours,
+      minutes,
+    });
 
     return {
       date,
