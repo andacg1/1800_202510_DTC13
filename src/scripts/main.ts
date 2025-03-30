@@ -27,7 +27,6 @@ function getDayParts(date: Date): string {
 
 function handleDateChange(event: Event) {
   const dateString = (event.target as HTMLInputElement).value;
-  console.debug((event.target as HTMLInputElement).value);
   const events = store
     .getState()
     .filteredEvents.filter(
@@ -79,7 +78,84 @@ async function handleStoreUpdate(state: AppStoreState) {
   await insertUserEvents(state.filteredEvents);
 }
 
+function addCalendarListener() {
+  const calendar: CalendarElement | null = document.querySelector(
+    "#my-events-calendar",
+  );
+  calendar?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    const path = e.composedPath();
+
+    const target = path?.[0] as HTMLButtonElement;
+    if (!target) {
+      console.debug("Could not find click target");
+      return;
+    }
+
+    const partAttr = target.attributes.getNamedItem("part");
+    if (!partAttr || !partAttr.value.includes("day")) {
+      console.debug("Clicked outside of a date button");
+      return;
+    }
+
+    if (target.querySelector("button")) {
+      console.debug("Date is already active");
+      return;
+    }
+    // Setup
+    target.classList.add("relative");
+    target.style.position = "relative";
+    target.style.zIndex = "10";
+    const plusBtn = document.createElement("button");
+    Object.assign(plusBtn.style, {
+      position: "absolute",
+      bottom: "100%",
+      left: "0",
+      backgroundColor: "var(--color-secondary)",
+      color: "var(--color-white)",
+      borderRadius: "4px",
+      opacity: "0",
+      transition: "ease-out 0.2s all",
+      transform: "translateY(100%)",
+      fontSize: "2em",
+      zIndex: "5",
+    } satisfies Partial<CSSStyleDeclaration>);
+
+    plusBtn.innerText = "+";
+    const blurHandler = () => {
+      setTimeout(() => {
+        plusBtn.style.transform = "translateY(100%)";
+        plusBtn.style.opacity = "0";
+        // Workaround to animate blur event
+        setTimeout(() => {
+          plusBtn.remove();
+          target.classList.remove("relative");
+          target.style.position = "static";
+        }, 100);
+      }, 200);
+    };
+    const createEventHandler = (e: MouseEvent) => {
+      console.log(calendar);
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      window.location.assign(`/create.html?date=${calendar?.value || ""}`);
+    };
+    target.appendChild(plusBtn);
+    // Can't read the animation keyframes from inside the shadow DOM, so
+    // this is a workaround
+    setTimeout(() => {
+      plusBtn.style.transform = "translateY(0%)";
+      plusBtn.style.opacity = "1";
+    }, 0);
+    plusBtn.addEventListener("click", createEventHandler);
+    target.addEventListener("focusout", blurHandler);
+  });
+}
+
 async function initMainPage() {
+  addCalendarListener();
   await CalSyncApi.getUserAttendance();
   await CalSyncApi.getUserEvents();
   await insertUserEvents(store.getState().filteredEvents);

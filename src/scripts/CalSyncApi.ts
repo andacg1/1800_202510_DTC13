@@ -151,15 +151,6 @@ export class CalSyncApi {
     const [hours, minutes] = timeISO.split(":");
     const dateISO = toShortISO(date);
 
-    console.log({
-      date,
-      dateISO,
-      timeISO,
-      amPm,
-      hours,
-      minutes,
-    });
-
     return {
       date,
       dateISO,

@@ -1,11 +1,13 @@
 @import "tailwindcss";
 @tailwind utilities;
+
 @plugin "daisyui" {
     themes: sunset --default;
 }
 :root {
     --aa-panel-max-height: 200px;
 }
+
 
 @plugin "daisyui/theme" {
     name: sunset;

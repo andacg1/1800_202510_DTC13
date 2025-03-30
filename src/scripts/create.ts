@@ -165,6 +165,17 @@ function syncStep() {
   stepsEl?.children;
 }
 
+function updateInputFromQueryParams() {
+  const calendar = document.getElementById(
+    "create-event-calendar",
+  ) as HTMLInputElement;
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has("date")) {
+    return;
+  }
+  calendar.value = params.get("date") || "";
+}
+
 function updateInputs(state: AppStoreState) {
   const formElement = document.getElementById(
     "create-event-form",
@@ -184,11 +195,13 @@ function updateInputs(state: AppStoreState) {
     "create-event-calendar",
   ) as HTMLInputElement;
 
+  const params = new URLSearchParams(window.location.search);
+
   eventDescriptionInput.value = state.draftEvent.description || "";
   eventTitleInput.value = state.draftEvent.title || "";
   eventTimeInput.value = state.draftEvent.startTime || "";
   eventTagInput.value = state.draftEvent.tagName || "";
-  calendar.value = state.draftEvent.startDate || "";
+  calendar.value = state.draftEvent.startDate || params.get("date") || "";
   eventIsPublicInput.checked = state.draftEvent.isPublic || false;
 }
 
@@ -212,6 +225,7 @@ async function initCreatePage() {
   setupHashListener();
   syncStep();
   setupCalendarListeners();
+  updateInputFromQueryParams();
   const tags = await CalSyncApi.getAllTags();
   updateExistingTags(tags);
   setupTagInput();
