@@ -7,7 +7,7 @@ import { hydrate } from "./hydrate";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import store from "./store.ts";
-import { demoEvents } from "./data/demoEvents.ts";
+import { demoEvents, demoEvents2 } from "./data/demoEvents.ts";
 
 function addLogoutListener() {
   const logoutBtn = document.getElementById("logout-btn");
@@ -170,14 +170,14 @@ function addDockButtonListeners() {
 export async function updateFirestore() {
   // const events = await CalSyncApi.getUserEvents();
   //const tags = await CalSyncApi.getAllTags();
-  // const events = demoEvents;
-  // //
-  // // console.debug(events);
-  // //
-  // for await (const event of events) {
-  //   // await CalSyncApi.deleteEvent(event.id);
-  //   await CalSyncApi.createEvent(event);
-  // }
+  const events = demoEvents2;
+  //
+  // console.debug(events);
+  //
+  for await (const event of events) {
+    // await CalSyncApi.deleteEvent(event.id);
+    await CalSyncApi.createEvent(event);
+  }
 }
 
 window.updateFirestore = updateFirestore;

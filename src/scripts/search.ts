@@ -32,7 +32,7 @@ const tagsPlugin = createTagsPlugin<WithId<TagData>>({
 });
 
 async function loadAllEvents() {
-  store.getState().setFilteredEvents(await CalSyncApi.getUserEvents());
+  store.getState().setFilteredEvents(await CalSyncApi.searchAllEvents());
 }
 
 function focusAutocomplete() {

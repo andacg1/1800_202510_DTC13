@@ -14,6 +14,7 @@ import {
   where,
   WithFieldValue,
   deleteDoc,
+  or,
 } from "firebase/firestore";
 import {
   CustomEventData,
@@ -240,6 +241,27 @@ export class CalSyncApi {
     const q = query(
       this.collection<EventData>("events"),
       where("user", "==", await getUserRef()),
+    ).withConverter(CalSyncApi.eventConverter);
+
+    const querySnapshot = await getDocs(q.withConverter(this.eventConverter));
+    const mappedEvents = querySnapshot.docs.map((doc) =>
+      CalSyncApi.eventConverter.fromFirestore(doc),
+    );
+    try {
+      store.getState().setFilteredEvents(mappedEvents);
+    } catch (e) {
+      console.error(e);
+    }
+    return mappedEvents;
+  }
+
+  static async searchAllEvents(): Promise<WithId<EventData>[]> {
+    const q = query(
+      this.collection<EventData>("events"),
+      or(
+        where("user", "==", await getUserRef()),
+        where("isPublic", "==", true),
+      ),
     ).withConverter(CalSyncApi.eventConverter);
 
     const querySnapshot = await getDocs(q.withConverter(this.eventConverter));

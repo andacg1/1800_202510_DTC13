@@ -54,3 +54,24 @@ export const demoEvents = [
     isPublic: true,
   },
 ];
+
+export const demoEvents2 = [
+  {
+    title: "Group Study Session",
+    description: "Study session for CST finals",
+    startDate: "2025-04-08",
+    startTime: "14:30",
+    duration: 120,
+    tagName: "Education",
+    isPublic: true,
+  },
+  {
+    title: "Chainsaw Man Movie Watch Party",
+    description: "BYOB",
+    startDate: "2025-10-29",
+    startTime: "08:00",
+    duration: 120,
+    tagName: "Anime",
+    isPublic: true,
+  },
+];
