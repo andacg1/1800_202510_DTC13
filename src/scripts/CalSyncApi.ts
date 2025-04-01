@@ -193,7 +193,7 @@ export class CalSyncApi {
     const newEventRef = doc(collection(this.db, "events"));
     const userRef = await getUserRef();
     let tagRef = null;
-    const allTags = store.getState().tags;
+    const allTags = await CalSyncApi.getAllTags();
 
     if (tagName) {
       const matchingTag = allTags.find((tag) => tag.name === tagName);
