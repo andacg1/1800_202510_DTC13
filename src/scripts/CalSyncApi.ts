@@ -254,6 +254,26 @@ export class CalSyncApi {
     return mappedEvents;
   }
 
+  static async getEventsWithTag(tagId: string): Promise<WithId<EventData>[]> {
+    const tagRef = doc(this.db, "tags", tagId);
+
+    const q = query(
+      this.collection<EventData>("events"),
+      where("tag", "==", tagRef),
+    ).withConverter(CalSyncApi.eventConverter);
+
+    const querySnapshot = await getDocs(q.withConverter(this.eventConverter));
+    const mappedEvents = querySnapshot.docs.map((doc) =>
+      CalSyncApi.eventConverter.fromFirestore(doc),
+    );
+    try {
+      store.getState().setFilteredEvents(mappedEvents);
+    } catch (e) {
+      console.error(e);
+    }
+    return mappedEvents;
+  }
+
   static async getUserAttendance(): Promise<WithId<AttendanceData>[]> {
     const q = query(
       this.collection<AttendanceData>("attendance"),
