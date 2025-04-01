@@ -166,7 +166,7 @@ function addDockButtonListeners() {
   }
 }
 
-export async function addTags() {
+export async function updateFirestore() {
   const events = await CalSyncApi.getUserAttendance();
   //const tags = await CalSyncApi.getAllTags();
 
@@ -182,7 +182,7 @@ export async function addTags() {
   // }
 }
 
-window.addTags = addTags;
+window.updateFirestore = updateFirestore;
 
 function initApp() {
   setAppState();
