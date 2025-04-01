@@ -26,6 +26,7 @@ export default defineConfig({
         support: resolve(__dirname, "support.html"),
         event: resolve(__dirname, "event.html"),
         search: resolve(__dirname, "search.html"),
+        myEvents: resolve(__dirname, "my-events.html"),
         bottomNavbar: resolve(__dirname, "src/components/bottom-navbar.html"),
         topNavbar: resolve(__dirname, "src/components/top-navbar.html"),
       },

@@ -30,7 +30,13 @@
       id="main-content"
       class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
     >
-      <form id="event-details-form" class="flex flex-col gap-4">
+      <form id="event-details-form" class="flex flex-col gap-4 relative pt-20">
+        <button
+          class="btn btn-secondary btn-ghost btn-circle my-5 absolute top-0 right-0"
+          id="delete-event-button"
+        >
+          <i class="fa-solid fa-times swap-on text-white"></i>
+        </button>
         <input
           type="text"
           placeholder="Event Title"
@@ -159,9 +165,6 @@
         </div>
       </form>
       <div id="add-to-calendar-container" class="mb-8 mt-12"></div>
-      <button class="btn btn-secondary my-5" id="delete-event-button">
-        Delete
-      </button>
     </main>
     <div id="fake-dock"></div>
     <nav id="bottom-navbar"></nav>

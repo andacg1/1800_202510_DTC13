@@ -128,10 +128,10 @@ function enableAutocomplete(
                   class="list-row hover:bg-neutral transition-all"
                 >
                   <div
-                    class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12"
+                    class="text-4xl font-thin tabular-nums text-center min-w-12"
                   >
                     <div class="">${date.getDate()}</div>
-                    <div class="text-sm text-primary">
+                    <div class="text-sm text-secondary">
                       ${date.toString().split(" ")[1]}
                     </div>
                   </div>

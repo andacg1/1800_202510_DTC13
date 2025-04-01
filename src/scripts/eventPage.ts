@@ -205,10 +205,8 @@ function addDeleteEventListener(event: CustomEventData) {
 
 async function loadEventTag(event: CustomEventData) {
   const tagInput = document.getElementById("event-tag") as HTMLInputElement;
-  console.log("123", event.tag)
   if (event.tag) {
     try {
-      console.log("456", CalSyncApi.db)
       const tagRef = doc(CalSyncApi.db, `tags/${event.tag.id}`);
       const tagSnap = await getDoc(tagRef);
       if (tagSnap.exists()) {
@@ -241,7 +239,5 @@ async function initEventPage() {
     });
   }
 }
-
-
 
 safeOnLoad(initEventPage);

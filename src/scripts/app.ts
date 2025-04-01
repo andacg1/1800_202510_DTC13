@@ -133,8 +133,7 @@ function addDockButtonListeners() {
       (e) => {
         // e.preventDefault();
         // e.stopPropagation();
-        // TODO: create my-events.html
-        window.location.assign("/search.html");
+        window.location.assign("/my-events.html");
       },
       true,
     );
@@ -176,6 +175,7 @@ export async function updateFirestore() {
   //
   for await (const event of events) {
     // await CalSyncApi.deleteEvent(event.id);
+    // @ts-ignore
     await CalSyncApi.createEvent(event);
   }
 }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-theme="sunset">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>CalSync</title>
+
+    <link href="/src/assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="/src/assets/fontawesome/css/solid.css" rel="stylesheet" />
+    <script
+      src="https://kit.fontawesome.com/1eb970bf8b.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="/styles/index.css" />
+    <link href="/styles/style.css" rel="stylesheet" />
+
+    <script type="module" src="/src/scripts/app"></script>
+    <script type="module" src="/src/scripts/myEvents"></script>
+
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
+    />
+  </head>
+  <body class="flex flex-col h-dvh max-h-dvh items-stretch">
+    <header id="top-navbar">
+      <div class="skeleton h-18 w-full rounded-none"></div>
+    </header>
+    <main
+      id="main-content"
+      class="flex flex-col items-center overflow-y-scroll grow-1 py-8"
+    >
+      <div
+        id="my-events-container"
+        class="list bg-base-100 rounded-box gap-2"
+      ></div>
+    </main>
+    <div id="fake-dock"></div>
+    <nav id="bottom-navbar"></nav>
+  </body>
+</html>

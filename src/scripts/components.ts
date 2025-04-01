@@ -18,13 +18,13 @@ export const EventElement = (event: WithId<EventData>) => {
   );
   return createHtmlElement(`
             <a href="/event.html?id=${id}" class="list-row hover:bg-neutral transition-all shadow-md">
-            <div class="text-4xl font-thin opacity-30 tabular-nums text-center min-w-12">
+            <div class="text-4xl font-thin tabular-nums text-center min-w-12">
             <div class="">${getDate(date, { in: tz("UTC") })}</div>
-            <div class="text-sm text-primary">${format(date, "LLL", { in: tz("UTC") })}</div>
+            <div class="text-sm text-secondary">${format(date, "LLL", { in: tz("UTC") })}</div>
             </div>
             <div class="list-col-grow gap-2 flex flex-col pt-2">
               <div class="flex flex-row justify-between pr-1">
-                <span>${title}</span>
+                <span class="text-wrap max-w-[32ch] inline-block pr-2">${title}</span>
                 ${userAttendance.includes(id) ? `<i class="fa-solid fa-star self-end text-primary"></i>` : ""}
               </div>
               <div class="text-xs uppercase font-semibold opacity-60">

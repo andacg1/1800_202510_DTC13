@@ -71,6 +71,12 @@ export class CalSyncApi {
       await deleteDoc(eventRef);
 
       console.debug(`Event ${eventId} deleted successfully.`);
+
+      const attendanceDeleteResp = await CalSyncApi.setUserAttendanceFor(
+        eventId,
+        false,
+      );
+
       toast("Event deleted successfully.", "success");
 
       // Refresh the event list after deletion
@@ -318,6 +324,26 @@ export class CalSyncApi {
       console.error(e);
     }
     return mappedAttendance;
+  }
+
+  static async getUserAttendingEvents(): Promise<WithId<CustomEventData>[]> {
+    const allAttendance = await CalSyncApi.getUserAttendance();
+
+    const events = await Promise.allSettled(
+      allAttendance.map(async (attendance) => {
+        try {
+          return (await CalSyncApi.getEvent(
+            attendance.event.id,
+          )) as CustomEventData;
+        } catch (e) {
+          console.warn(e);
+          return;
+        }
+      }),
+    );
+    return events
+      .filter((event) => event.status === "fulfilled")
+      .map((event) => event.value as WithId<CustomEventData>);
   }
 
   static async getUserAttendanceFor(
