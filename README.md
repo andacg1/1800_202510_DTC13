@@ -2,22 +2,23 @@
 # Project Name
 
 ## Overview
-Summarize your project's purpose, problem solved, key features, user benefits, development context, and main technologies used.
 
-Example:
+This client-side JavaScript web application provides a convenient way for group members to keep track of events.
+It lets users sign up for public events and keep track of events they're attending.
 
-This client-side JavaScript web application provides real-time weather updates for cities worldwide. It simplifies accessing weather information through an intuitive mobile-first interface, allowing users to input a city name and receive data on temperature, humidity, and conditions.
-
-Developed for the [Course Name] course, applying User-Centred Design practices, agile project management processes, integrating a weather API, and Firebase backend services.
+Developed for the COMP 1800 course, applying User-Centred Design practices, agile project management processes, and Firebase backend services.
 
 ---
 
 ## Features
 
 Example:
-- Real-time weather updates for any city.
-- Responsive design for desktop and mobile.
-- Displays temperature, humidity, and weather conditions.
+- Create events with optional tags
+- List events as private/public
+- Sign up for events
+- Search for events
+  - Filter by tags
+  - Search inside title and description
 
 ---
 
@@ -28,15 +29,28 @@ Example:
 - **Backend**: Firebase for hosting
 - **Database**: Firestore
 - **API**: OpenWeatherMap API
-
+- **Other Libraries**: 
+  - @algolia/autocomplete-js
+  - date-fns
+  - @fastify/deepmerge
+  - @fortawesome/fontawesome-svg-core
+  - add-to-calendar-button
+  - cally
+  - dotenv
+  - tailwindcss
+  - zustand
+  - daisyui
+- **Dev Dependencies**:
+  - vite
+  - eslint
 ---
 
 ## Usage
 
 Example:
-1. Open your browser and visit `http://localhost:3000`.
-2. Enter the name of the city in the search bar and press enter.
-3. View the weather information displayed on the screen.
+1. Run `npm i`
+2. Run `npm run dev`
+3. Open your browser and visit `http://localhost:5173`
 
 ---
 
@@ -44,14 +58,55 @@ Example:
 
 Example:
 ```
-project-name/
+CalSync/
 ├── src/
-│   ├── index.html
+│   ├── assets/
+│   │   └── ...
+│   ├── components/
+│   │   ├── bottom-navbar.html
+│   │   └── top-navbar.html
+│   ├── pages/
+│   │   └── template.html
+│   ├── scripts/
+│   │   ├── data/
+│   │   ├── lib/
+│   │   ├── app.js
+│   │   ├── authentication.js
+│   │   ├── CalSyncApi.js
+│   │   ├── components.js
+│   │   ├── create.js
+│   │   ├── eventPage.js
+│   │   ├── firebaseAPI_DTC13.js
+│   │   ├── hydrate.js
+│   │   ├── main.js
+│   │   ├── profile.js
+│   │   ├── search.js
+│   │   ├── store.js
+│   │   └── support.js
+│   ├── Event.d.ts
+│   └── vite-env.d.ts
+├── styles/
 │   ├── style.css
-│   ├── app.js
-│   └── components/
+│   └── index.css
+├── .env
 ├── package.json
 ├── README.md
+├── create.html
+├── event.html
+├── index.html
+├── login.html
+├── main.html
+├── profile.html
+├── search.html
+├── support.html
+├── package-lock.json
+├── window.d.ts
+├── .firebaserc
+├── firebase.json
+├── firestore.indexes.json
+├── firestore.rules
+├── vite.config.js
+├── tailwind.config.js
 └── .gitignore
 ```
 
@@ -67,9 +122,7 @@ project-name/
 ## Acknowledgments
 
 Example:
-- Weather data sourced from [OpenWeatherMap](https://openweathermap.org/).
-- Code snippets for ___ algoirthm were adapted from resources such as [Stack Overflow](https://stackoverflow.com/) and [MDN Web Docs](https://developer.mozilla.org/).
-- Icons sourced from [FontAwesome](https://fontawesome.com/) and images from [Unsplash](https://unsplash.com/).
+- Icons sourced from [FontAwesome](https://fontawesome.com/).
 
 ---
 
@@ -77,17 +130,13 @@ Example:
 ### Limitations
 
 Example:
-- Currently, the app only supports city-based weather searches.
-- Limited to basic weather parameters like temperature, humidity, and conditions.
-- The user interface can be further enhanced for accessibility.
+- Search is not server-side due to Firestore limitations.
 
 ### Future Work
 
 Example: 
-- Add support for location-based weather detection using GPS.
-- Implement additional weather parameters like wind speed and UV index.
-- Create a dark mode for better usability in low-light conditions.
-- Integrate user accounts for saving favorite locations.
+- Add Google Calendar integration
+- Add Discord integration
 
 ---
 

@@ -2,6 +2,7 @@ import "cally";
 import type { App } from "../../window";
 import "./store.ts";
 import "./firebaseAPI_DTC13.ts";
+import { CalSyncApi } from "./CalSyncApi.ts";
 import { hydrate } from "./hydrate";
 import safeOnLoad from "./lib/safeOnLoad.ts";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -164,6 +165,24 @@ function addDockButtonListeners() {
     );
   }
 }
+
+export async function addTags() {
+  const events = await CalSyncApi.getUserAttendance();
+  //const tags = await CalSyncApi.getAllTags();
+
+  console.debug(events);
+
+  // for await (const event of events) {
+  //   const tagRef = doc(CalSyncApi.db, "tags", pickRandom(tags).id);
+  //
+  //   CalSyncApi.updateEvent(event.id, {
+  //     ...event,
+  //     tag: tagRef,
+  //   });
+  // }
+}
+
+window.addTags = addTags;
 
 function initApp() {
   setAppState();
