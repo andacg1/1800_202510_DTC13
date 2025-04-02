@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "firebase deploy"
+    "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
     "@algolia/autocomplete-js": "^1.18.1",
